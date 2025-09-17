@@ -57,7 +57,7 @@ class SplashScreen extends StatelessWidget {
               Positioned(
                 top: constraints.maxHeight - (constraints.maxHeight / 2) - 75,
                 child: Image.asset(
-                  "assets/images/trash.png",
+                  "assets/images/trashbin.png",
                   width: 150,
                   height: 150,
                 ),

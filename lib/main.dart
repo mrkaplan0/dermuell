@@ -1,3 +1,4 @@
+import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/pages/home_page.dart';
 import 'package:dermuell/pages/landing_page.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +23,9 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomePage(title: 'Der Müll'),
       },
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Color.fromARGB(0, 125, 69, 27),
-        ),
+        useMaterial3: true,
+        scaffoldBackgroundColor: XConst.bgColor,
+        colorScheme: ColorScheme.fromSeed(seedColor: XConst.fifthColor),
       ),
     );
   }
