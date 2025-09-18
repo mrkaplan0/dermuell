@@ -1,13 +1,17 @@
 {
-    "cmake.ignoreCMakeListsMissing": true,
-    "folder-color.pathColors": [
-        {
-            "folderPath": "dermuell\\lib\\pages\\",
-            "color": "foldercolorizer.color_00cc66"
-        },
-        {
-            "folderPath": "dermuell\\lib\\service\\",
-            "color": "foldercolorizer.color_3366ff"
-        }
-    ]
+  "cmake.ignoreCMakeListsMissing": true,
+  "folder-color.pathColors": [
+    {
+      "folderPath": "dermuell\\lib\\pages\\",
+      "color": "foldercolorizer.color_00cc66"
+    },
+    {
+      "folderPath": "dermuell\\lib\\service\\",
+      "color": "foldercolorizer.color_3366ff"
+    },
+    {
+      "folderPath": "dermuell\\lib\\model\\",
+      "color": "foldercolorizer.color_996699"
+    }
+  ]
 }
