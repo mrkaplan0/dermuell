@@ -2,11 +2,15 @@
 import 'dart:convert';
 
 class Adresse {
+  int? id;
+  int userId;
   String strasse;
   String hausnummer;
   String plz;
   String stadt;
   Adresse({
+    this.id,
+    required this.userId,
     required this.strasse,
     required this.hausnummer,
     required this.plz,
@@ -14,12 +18,16 @@ class Adresse {
   });
 
   Adresse copyWith({
+    int? id,
+    int? userId,
     String? strasse,
     String? hausnummer,
     String? plz,
     String? stadt,
   }) {
     return Adresse(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
       strasse: strasse ?? this.strasse,
       hausnummer: hausnummer ?? this.hausnummer,
       plz: plz ?? this.plz,
@@ -29,6 +37,8 @@ class Adresse {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
+      'userId': userId,
       'strasse': strasse,
       'hausnummer': hausnummer,
       'plz': plz,
@@ -38,6 +48,8 @@ class Adresse {
 
   factory Adresse.fromMap(Map<String, dynamic> map) {
     return Adresse(
+      id: map['id'] != null ? map['id'] as int : null,
+      userId: map['userId'] as int,
       strasse: map['strasse'] as String,
       hausnummer: map['hausnummer'] as String,
       plz: map['plz'] as String,
@@ -52,14 +64,16 @@ class Adresse {
 
   @override
   String toString() {
-    return 'Adresse(strasse: $strasse, hausnummer: $hausnummer, plz: $plz, stadt: $stadt)';
+    return 'Adresse(id: $id, userId: $userId, strasse: $strasse, hausnummer: $hausnummer, plz: $plz, stadt: $stadt)';
   }
 
   @override
   bool operator ==(covariant Adresse other) {
     if (identical(this, other)) return true;
 
-    return other.strasse == strasse &&
+    return other.id == id &&
+        other.userId == userId &&
+        other.strasse == strasse &&
         other.hausnummer == hausnummer &&
         other.plz == plz &&
         other.stadt == stadt;
@@ -67,7 +81,9 @@ class Adresse {
 
   @override
   int get hashCode {
-    return strasse.hashCode ^
+    return id.hashCode ^
+        userId.hashCode ^
+        strasse.hashCode ^
         hausnummer.hashCode ^
         plz.hashCode ^
         stadt.hashCode;

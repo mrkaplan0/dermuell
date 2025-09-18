@@ -1,31 +1,26 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:dermuell/model/adresse.dart';
-
 class User {
-  String id;
+  int id;
   String name;
   String email;
   String password;
   String role;
-  Adresse? adresse;
   User({
     required this.id,
     required this.name,
     required this.email,
     required this.password,
     required this.role,
-    this.adresse,
   });
 
   User copyWith({
-    String? id,
+    int? id,
     String? name,
     String? email,
     String? password,
     String? role,
-    Adresse? adresse,
   }) {
     return User(
       id: id ?? this.id,
@@ -33,7 +28,6 @@ class User {
       email: email ?? this.email,
       password: password ?? this.password,
       role: role ?? this.role,
-      adresse: adresse ?? this.adresse,
     );
   }
 
@@ -44,20 +38,16 @@ class User {
       'email': email,
       'password': password,
       'role': role,
-      'adresse': adresse?.toMap(),
     };
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'] as String,
+      id: map['id'] as int,
       name: map['name'] as String,
       email: map['email'] as String,
       password: map['password'] as String,
       role: map['role'] as String,
-      adresse: map['adresse'] != null
-          ? Adresse.fromMap(map['adresse'] as Map<String, dynamic>)
-          : null,
     );
   }
 
@@ -68,7 +58,7 @@ class User {
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name, email: $email, password: $password, role: $role, adresse: $adresse)';
+    return 'User(id: $id, name: $name, email: $email, password: $password, role: $role)';
   }
 
   @override
@@ -79,8 +69,7 @@ class User {
         other.name == name &&
         other.email == email &&
         other.password == password &&
-        other.role == role &&
-        other.adresse == adresse;
+        other.role == role;
   }
 
   @override
@@ -89,7 +78,6 @@ class User {
         name.hashCode ^
         email.hashCode ^
         password.hashCode ^
-        role.hashCode ^
-        adresse.hashCode;
+        role.hashCode;
   }
 }
