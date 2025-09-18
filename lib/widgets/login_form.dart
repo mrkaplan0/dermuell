@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:dermuell/const/constants.dart';
+import 'package:dermuell/pages/auth/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,7 +33,7 @@ class LoginForm extends ConsumerWidget {
             const Text('Anmelden', style: XConst.myBigTitleTextStyle),
 
             TextFormField(
-              initialValue: "a@e.com",
+              // initialValue: "a@e.com",
               focusNode: focusNode,
               decoration: const InputDecoration(
                 labelText: 'Email',
@@ -65,7 +66,7 @@ class LoginForm extends ConsumerWidget {
             ),
 
             TextFormField(
-              initialValue: "password",
+              // initialValue: "password",
               focusNode: focusNode2,
               decoration: const InputDecoration(
                 labelText: 'Passwort',
@@ -101,9 +102,9 @@ class LoginForm extends ConsumerWidget {
             ),
             TextButton(
               onPressed: () {
-                /*  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => RegisterPage()),
-                  ); */
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (context) => RegisterPage()));
               },
               child: const Text("Registrieren"),
             ),

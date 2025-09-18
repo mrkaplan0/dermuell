@@ -8,6 +8,8 @@ void main() {
   runApp(ProviderScope(child: const MyApp()));
 }
 
+GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -15,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: rootNavigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Der Müll',
       initialRoute: '/',

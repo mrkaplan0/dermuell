@@ -69,8 +69,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         .animate(
                           effects: [
                             MoveEffect(
-                              delay: 1800.ms,
-                              duration: 8000.ms,
+                              duration: 1000.ms,
                               begin: Offset(0, 0),
                               end: Offset(0, 350),
                               curve: Curves.easeOut,
@@ -99,7 +98,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
                 ],
                 autoPlay: false,
                 onComplete: (animationController1) {
-                  print("form animation completed");
                   animationController2.forward();
                 },
                 controller: animationController1,
@@ -113,7 +111,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           width: 120,
                           height: 120,
                         )
-                        //COVER ANIMATION 1
+                        //COVER ANIMATION 1 to open
                         .animate(
                           effects: [
                             MoveEffect(
@@ -132,11 +130,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           ],
                           autoPlay: false,
                           controller: animationController2,
-                          onComplete: (controller) {
-                            // animationController3.forward();
-                          },
                         )
-                        //COVER ANIMATION 2
+                        //COVER ANIMATION 2 to close
                         .animate(
                           effects: [
                             MoveEffect(
