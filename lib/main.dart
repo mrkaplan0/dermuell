@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const LandingPage(),
         '/landing': (context) => const LandingPage(),
         '/login': (context) => const LoginPage(),
-        '/home': (context) => const HomePage(title: 'Der Müll'),
+        '/home': (context) => const HomePage(),
       },
       theme: ThemeData(
         useMaterial3: true,
