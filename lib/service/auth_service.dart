@@ -15,7 +15,7 @@ class AuthService implements AuthBase {
 
   /// Register a new user and return (User, token)
   @override
-  Future<bool> register(
+  Future<(bool, String? error)> register(
     String name,
     String email,
     String password,
@@ -30,19 +30,22 @@ class AuthService implements AuthBase {
     debugPrint('Register response status: ${res.statusCode}');
     debugPrint('Register response data: $data');
     if (data is! Map<String, dynamic>) {
-      throw Exception('Unexpected response format');
+      return (false, ('Unexpected response format'));
     }
 
     if (data['status'] != 'success') {
-      throw Exception('Registration failed: ${data['message']}');
+      return (
+        false,
+        ('Registration failed: ${data['message'] ?? 'Unknown error'}'),
+      );
     }
 
-    return true; // Registration successful
+    return (true, null); // Registration successful
   }
 
   /// Login a user
   @override
-  Future<(User?, String token)> login(String email, String password) async {
+  Future<(User?, String? error)> login(String email, String password) async {
     final res = await _dio.post(
       Configs.apiBaseUrl + Configs.loginUrl,
       data: {'email': email, 'password': password},
@@ -51,24 +54,24 @@ class AuthService implements AuthBase {
     final data = res.data;
 
     if (data is! Map<String, dynamic>) {
-      throw Exception('Unexpected response format');
+      return (null, 'Unexpected response format');
     }
 
     // Check if login was successful
     if (data['status'] != 'success') {
-      throw Exception('Login failed: ${data['message'] ?? 'Unknown error'}');
+      return (null, 'Login failed: ${data['message'] ?? 'Unknown error'}');
     }
 
     // Check if user_info is present in the response
     final userJson = data['user_info'];
     if (userJson == null || userJson is! Map<String, dynamic>) {
-      throw Exception('User object missing in response');
+      return (null, 'User information missing in response');
     }
 
     // Check if token is present
     final token = data['token'] as String?;
     if (token == null || token.isEmpty) {
-      throw Exception('Token missing in response');
+      return (null, 'Authentication token missing in response');
     }
 
     // Set the token in the API service
@@ -101,36 +104,5 @@ class AuthService implements AuthBase {
       return null; // No user data available
     }
     return User.fromMap(data);
-  }
-
-  String getErrorMessage(DioException e) {
-    String errorMessage = 'Registration failed: ';
-    switch (e.type) {
-      case DioExceptionType.connectionTimeout:
-        errorMessage += 'Connection timeout';
-        break;
-      case DioExceptionType.sendTimeout:
-        errorMessage += 'Send timeout';
-        break;
-      case DioExceptionType.receiveTimeout:
-        errorMessage += 'Receive timeout';
-        break;
-      case DioExceptionType.connectionError:
-        errorMessage +=
-            'Connection error. Please check your internet connection.';
-        break;
-      case DioExceptionType.badResponse:
-        errorMessage += 'Server error (${e.response?.statusCode})';
-        break;
-      case DioExceptionType.cancel:
-        errorMessage += 'Request cancelled';
-        break;
-      case DioExceptionType.unknown:
-        errorMessage += 'Unknown error: ${e.message}';
-        break;
-      default:
-        errorMessage += e.message ?? 'Unknown error';
-    }
-    return errorMessage;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:dermuell/const/constants.dart';
+import 'package:dermuell/pages/auth/login_page.dart';
 import 'package:dermuell/pages/home_page.dart';
 import 'package:dermuell/pages/landing_page.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LandingPage(),
+        '/landing': (context) => const LandingPage(),
+        '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(title: 'Der Müll'),
       },
       theme: ThemeData(

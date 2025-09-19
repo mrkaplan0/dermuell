@@ -2,6 +2,7 @@
 
 import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/main.dart';
+import 'package:dermuell/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -128,6 +129,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
 
   TextFormField passwordFormfield(BuildContext context) {
     return TextFormField(
+      initialValue: "password",
       focusNode: focusNode,
       obscureText: true,
       decoration: InputDecoration(
@@ -159,6 +161,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
 
   TextFormField passwordFormfield2(BuildContext context) {
     return TextFormField(
+      initialValue: "password",
       focusNode: focusNode2,
       obscureText: true,
       decoration: InputDecoration(
@@ -196,20 +199,20 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
   }
 
   Future _register(BuildContext context, WidgetRef ref) async {
-    /*   try {
+    try {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState?.save();
         print('$_username, $_email, $_password, $_verifyPasswort');
         var authService = ref.read(authServiceProvider);
 
-        bool result = await authService.register(
-          name: _username,
-          email: _email,
-          password: _password,
-          role: 'user',
+        var (result, error) = await authService.register(
+          _username,
+          _email,
+          _password,
+          'user',
         );
 
-        if (!result) {
+        if (error != null) {
           _showErrorDialog(context, 'Registration failed. Please try again.');
           return;
         }
@@ -226,7 +229,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
       // String errorMessage = _getErrorMessage(e);
 
       _showErrorDialog(context, e.toString());
-    } */
+    }
   }
 
   void _showErrorDialog(BuildContext context, String message) {

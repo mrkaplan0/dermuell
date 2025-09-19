@@ -2,6 +2,7 @@
 
 import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/pages/auth/register_page.dart';
+import 'package:dermuell/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,7 +34,7 @@ class LoginForm extends ConsumerWidget {
             const Text('Anmelden', style: XConst.myBigTitleTextStyle),
 
             TextFormField(
-              // initialValue: "a@e.com",
+              initialValue: "test@test.com",
               focusNode: focusNode,
               decoration: const InputDecoration(
                 labelText: 'Email',
@@ -66,7 +67,7 @@ class LoginForm extends ConsumerWidget {
             ),
 
             TextFormField(
-              // initialValue: "password",
+              initialValue: "password",
               focusNode: focusNode2,
               decoration: const InputDecoration(
                 labelText: 'Passwort',
@@ -115,35 +116,33 @@ class LoginForm extends ConsumerWidget {
   }
 
   void _login(BuildContext context, WidgetRef ref) async {
-    animationController.forward();
-    /*   try {
+    focusNode.unfocus();
+    focusNode2.unfocus();
+    try {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
-       var authService = ref.read(authServiceProvider); 
-        var (user, token) = await authService.login(
-          email: _email,
-          password: _password,
-        );
+        var authService = ref.read(authServiceProvider);
+        var (user, error) = await authService.login(_email, _password);
 
-        if (token.isEmpty || user == null) {
+        if (error != null || user == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Login fehlgeschlagen. Bitte versuchen Sie es erneut.',
+                'Login fehlgeschlagen. Bitte versuchen Sie es erneut. Error: $error',
               ),
             ),
           );
           return;
         } else {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Willkommen ${user.name}!')));
-          // Navigate to home or another page after successful login
-          if (user.role == 'admin') {
-            Navigator.pushReplacementNamed(context, '/admin_dashboard');
-          } else if (user.role == 'user') {
-            Navigator.pushReplacementNamed(context, '/user_dashboard');
-          }
+          // Start animation and show message
+          animationController.forward();
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Willkommen ${user.name}!'),
+              duration: Durations.medium1,
+            ),
+          );
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -155,6 +154,6 @@ class LoginForm extends ConsumerWidget {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Ein Fehler ist aufgetreten: $e')));
-    }*/
+    }
   }
 }
