@@ -30,7 +30,7 @@ class SplashScreen extends StatelessWidget {
                 top: constraints.maxHeight - (constraints.maxHeight / 2) - 220,
                 right: constraints.maxWidth / 2 - 100,
                 child: Image.asset(
-                  "assets/images/cover.png",
+                  "assets/images/cover2.png",
                   width: 150,
                   height: 150,
                 ),
@@ -39,8 +39,8 @@ class SplashScreen extends StatelessWidget {
                   MoveEffect(
                     delay: 1200.ms,
                     duration: 900.ms,
-                    begin: Offset(40, 0),
-                    end: Offset(-60, -27),
+                    begin: Offset(60, 5),
+                    end: Offset(-53, -27),
                     curve: Curves.easeOut,
                   ),
                   RotateEffect(
@@ -52,7 +52,7 @@ class SplashScreen extends StatelessWidget {
                   ),
                 ],
                 onComplete: (controller) =>
-                    Navigator.of(context).pushReplacementNamed('/'),
+                    Navigator.of(context).pushReplacementNamed('/landing'),
               ),
               Positioned(
                 top: constraints.maxHeight - (constraints.maxHeight / 2) - 75,

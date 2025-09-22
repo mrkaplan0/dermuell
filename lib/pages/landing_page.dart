@@ -1,3 +1,4 @@
+import 'package:dermuell/pages/address/select_address.dart';
 import 'package:dermuell/pages/auth/login_page.dart';
 import 'package:dermuell/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,6 @@ class LandingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return HomePage();
+    return SelectAddress();
   }
 }

@@ -6,6 +6,7 @@ class XConst {
   static const Color thirdColor = Color(0xFFD19C1D);
   static const Color fourthColor = Color(0xFFD7F75B);
   static const Color fifthColor = Color(0xFF9BE564);
+  static const Color sixthColor = Color(0xFF64722A);
   static const Color bgColor = Color(0xFFF5F5F5);
 
   static const TextStyle myBigTitleTextStyle = TextStyle(

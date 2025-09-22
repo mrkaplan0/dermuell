@@ -7,6 +7,7 @@ class User {
   String email;
   String? password;
   String role;
+
   User({
     required this.id,
     required this.name,
@@ -14,6 +15,8 @@ class User {
     this.password,
     required this.role,
   });
+
+  User u = User(id: 1, name: "Ömer", email: "w@q.com", role: "role");
 
   User copyWith({
     int? id,
