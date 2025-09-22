@@ -1,4 +1,5 @@
 import 'package:dermuell/const/constants.dart';
+import 'package:dermuell/provider/address_provider.dart';
 import 'package:dermuell/widgets/bin_with_eyes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,6 +41,8 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    var citiesList = ref.watch(citiesProvider);
+
     return Scaffold(
       body: PageView(
         controller: controller,
@@ -49,58 +52,69 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
             activePage: currentPage,
             title: "Wählen Sie Ihre Stadt.",
             imagePath: "assets/images/bg1.png",
-            mainWidget: Column(
-              spacing: 20,
-              children: [
-                DropdownMenu<String>(
-                  controller: cityEditingController,
-                  focusNode: cityFocusNode,
-                  requestFocusOnTap: true,
-                  width: size.width - 40,
-                  enableFilter: true,
-                  hintText: "Stadten",
-                  inputDecorationTheme: InputDecorationTheme(
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0),
+            mainWidget: citiesList.when(
+              data: (cities) {
+                return Column(
+                  spacing: 20,
+                  children: [
+                    DropdownMenu<String>(
+                      controller: cityEditingController,
+                      focusNode: cityFocusNode,
+                      requestFocusOnTap: true,
+                      width: size.width - 40,
+                      menuHeight: 200,
+                      enableFilter: true,
+                      hintText: "Stadte",
+                      inputDecorationTheme: InputDecorationTheme(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                      leadingIcon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          "assets/images/logo.png",
+                          width: 10,
+                          height: 10,
+                        ),
+                      ),
+                      dropdownMenuEntries: cities.map((city) {
+                        return DropdownMenuEntry<String>(
+                          value: city['id'].toString(),
+                          label: city['name'],
+                        );
+                      }).toList(),
+                      onSelected: (value) {
+                        city = value;
+                        cityEditingController.text = cities.firstWhere(
+                          (city) => city['id'].toString() == value,
+                        )['name'];
+                        cityFocusNode.unfocus();
+                        print("Seçilen: $value");
+                      },
                     ),
-                  ),
-                  leadingIcon: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(
-                      "assets/images/logo.png",
-                      width: 10,
-                      height: 10,
+
+                    PrimaryButton(
+                      text: "Weiter",
+                      onPressed: () {
+                        controller.nextPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
                     ),
-                  ),
-                  dropdownMenuEntries: [
-                    DropdownMenuEntry(value: 'Nürnberg', label: 'Nürnberg'),
-                    DropdownMenuEntry(value: 'Coesfeld', label: 'Coesfeld'),
-                    DropdownMenuEntry(value: 'Aachen', label: 'Aachen'),
+
+                    TextButton(
+                      onPressed: () {},
+                      child: Text("Meine Stadt nicht gefunden?"),
+                    ),
                   ],
-                  onSelected: (value) {
-                    city = value;
-                    cityFocusNode.unfocus();
-                    print("Seçilen: $value");
-                  },
-                ),
-
-                PrimaryButton(
-                  text: "Weiter",
-                  onPressed: () {
-                    controller.nextPage(
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                ),
-
-                TextButton(
-                  onPressed: () {},
-                  child: Text("Meine Stadt nicht gefunden?"),
-                ),
-              ],
+                );
+              },
+              error: (err, stack) => Text('Error: $err'),
+              loading: () => Center(child: CircularProgressIndicator()),
             ),
           ),
 
