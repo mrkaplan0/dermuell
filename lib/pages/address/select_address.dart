@@ -12,7 +12,13 @@ class SelectAddress extends ConsumerStatefulWidget {
 
 class _SelectAddressState extends ConsumerState<SelectAddress> {
   PageController controller = PageController();
+  TextEditingController cityEditingController = TextEditingController();
+  TextEditingController streetEditingController = TextEditingController();
+  TextEditingController hNumberEditingController = TextEditingController();
+  FocusNode cityFocusNode = FocusNode();
+  FocusNode streetFocusNode = FocusNode();
   int currentPage = 0;
+  String? city, street, houseNumber;
 
   @override
   void initState() {
@@ -25,20 +31,149 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
   }
 
   @override
+  void dispose() {
+    cityEditingController.dispose();
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: PageView(
         controller: controller,
         children: [
+          // First Page
           AddressSelectionTemplate(
             activePage: currentPage,
             title: "Wählen Sie Ihre Stadt.",
             imagePath: "assets/images/bg1.png",
+            mainWidget: Column(
+              spacing: 20,
+              children: [
+                DropdownMenu<String>(
+                  controller: cityEditingController,
+                  focusNode: cityFocusNode,
+                  requestFocusOnTap: true,
+                  width: size.width - 40,
+                  enableFilter: true,
+                  hintText: "Stadten",
+                  inputDecorationTheme: InputDecorationTheme(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                  leadingIcon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      "assets/images/logo.png",
+                      width: 10,
+                      height: 10,
+                    ),
+                  ),
+                  dropdownMenuEntries: [
+                    DropdownMenuEntry(value: 'Nürnberg', label: 'Nürnberg'),
+                    DropdownMenuEntry(value: 'Coesfeld', label: 'Coesfeld'),
+                    DropdownMenuEntry(value: 'Aachen', label: 'Aachen'),
+                  ],
+                  onSelected: (value) {
+                    city = value;
+                    cityFocusNode.unfocus();
+                    print("Seçilen: $value");
+                  },
+                ),
+
+                PrimaryButton(
+                  text: "Weiter",
+                  onPressed: () {
+                    controller.nextPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
+
+                TextButton(
+                  onPressed: () {},
+                  child: Text("Meine Stadt nicht gefunden?"),
+                ),
+              ],
+            ),
           ),
+
+          // SECOND PAGE
           AddressSelectionTemplate(
             activePage: currentPage,
             title: "Wählen Sie Ihre Straße.",
             imagePath: "assets/images/bg2.png",
+            mainWidget: Column(
+              spacing: 20,
+              children: [
+                DropdownMenu<String>(
+                  controller: streetEditingController,
+                  focusNode: streetFocusNode,
+                  requestFocusOnTap: true,
+                  width: size.width - 40,
+                  enableFilter: true,
+                  hintText: "Straße",
+                  inputDecorationTheme: InputDecorationTheme(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                  leadingIcon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      "assets/images/logo.png",
+                      width: 10,
+                      height: 10,
+                    ),
+                  ),
+                  dropdownMenuEntries: [
+                    DropdownMenuEntry(value: 'Nürnberg', label: 'Nürnberg'),
+                    DropdownMenuEntry(value: 'Coesfeld', label: 'Coesfeld'),
+                    DropdownMenuEntry(value: 'Aachen', label: 'Aachen'),
+                  ],
+                  onSelected: (value) {
+                    street = value;
+                    streetFocusNode.unfocus();
+                    print("Seçilen: $value");
+                  },
+                ),
+
+                TextFormField(
+                  controller: hNumberEditingController,
+                  decoration: InputDecoration(
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(
+                        "assets/images/logo.png",
+                        width: 10,
+                        height: 10,
+                      ),
+                    ),
+                    hintText: "Hausnummer",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                ),
+
+                PrimaryButton(
+                  text: "Weiter",
+                  onPressed: () {
+                    // Navigate to next page or perform action
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -50,12 +185,14 @@ class AddressSelectionTemplate extends StatefulWidget {
   final int activePage;
   final String imagePath;
   final String title;
+  final Widget mainWidget;
 
   AddressSelectionTemplate({
     super.key,
     required this.activePage,
     required this.imagePath,
     required this.title,
+    required this.mainWidget,
   });
 
   @override
@@ -64,17 +201,6 @@ class AddressSelectionTemplate extends StatefulWidget {
 }
 
 class _AddressSelectionTemplateState extends State<AddressSelectionTemplate> {
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController controller = TextEditingController();
-
-  String? _selectedValue;
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -105,48 +231,12 @@ class _AddressSelectionTemplateState extends State<AddressSelectionTemplate> {
               ),
             ),
           ),
-          Positioned(
-            top: 200,
-            left: 20,
-            right: 20,
-            child: DropdownMenu<String>(
-              controller: controller,
-              requestFocusOnTap: true,
-              width: size.width - 40,
-              enableFilter: true,
-              leadingIcon: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  "assets/images/logo.png",
-                  width: 10,
-                  height: 10,
-                ),
-              ),
-              dropdownMenuEntries: [
-                DropdownMenuEntry(value: 'Nürnberg', label: 'Nürnberg'),
-                DropdownMenuEntry(value: 'Coesfeld', label: 'Coesfeld'),
-                DropdownMenuEntry(value: 'Aachen', label: 'Aachen'),
-              ],
-              onSelected: (value) {
-                print("Seçilen: $value");
-              },
-            ),
-          ),
+          Positioned(top: 200, left: 20, right: 20, child: widget.mainWidget),
+
           Positioned(
             bottom: 20,
             left: size.width * 0.5 - 25,
             child: PageIndicator(activePage: widget.activePage),
-          ),
-          Positioned(
-            top: 270,
-            left: 20,
-            right: 20,
-            child: PrimaryButton(
-              text: "Weiter",
-              onPressed: () {
-                // Navigate to next page or perform action
-              },
-            ),
           ),
           Positioned(bottom: 70, right: 20, child: BinWithEyes(size: 150)),
         ],
