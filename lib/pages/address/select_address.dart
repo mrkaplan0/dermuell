@@ -54,7 +54,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
           // First Page
           AddressSelectionTemplate(
             activePage: currentPage,
-            title: "Wählen Sie Ihre Stadt.",
+            title: "Wählen Sie Ihre Stadt:",
             imagePath: "assets/images/bg1.png",
             focusNode: cityFocusNode,
             mainWidget: citiesList.when(
@@ -121,7 +121,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
 
                     TextButton(
                       onPressed: () {},
-                      child: Text("Meine Stadt nicht gefunden?"),
+                      child: Text("Deine Stadt nicht gefunden?"),
                     ),
                   ],
                 );
