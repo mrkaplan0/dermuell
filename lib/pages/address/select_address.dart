@@ -18,8 +18,12 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
   TextEditingController hNumberEditingController = TextEditingController();
   FocusNode cityFocusNode = FocusNode();
   FocusNode streetFocusNode = FocusNode();
+  FocusNode hNumberFocusNode = FocusNode();
   int currentPage = 0;
-  String? city, street, houseNumber;
+  String? street, houseNumber;
+  Map<String, dynamic>? city;
+  List<Map<String, dynamic>> streets = [];
+  List<Map<String, dynamic>> houseNr = [];
 
   @override
   void initState() {
@@ -52,6 +56,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
             activePage: currentPage,
             title: "Wählen Sie Ihre Stadt.",
             imagePath: "assets/images/bg1.png",
+            focusNode: cityFocusNode,
             mainWidget: citiesList.when(
               data: (cities) {
                 return Column(
@@ -87,7 +92,9 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                         );
                       }).toList(),
                       onSelected: (value) {
-                        city = value;
+                        city = cities.firstWhere(
+                          (city) => city['id'].toString() == value,
+                        );
                         cityEditingController.text = cities.firstWhere(
                           (city) => city['id'].toString() == value,
                         )['name'];
@@ -98,12 +105,18 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
 
                     PrimaryButton(
                       text: "Weiter",
-                      onPressed: () {
-                        controller.nextPage(
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
+                      onPressed: city != null
+                          ? () async {
+                              streets = await ref
+                                  .watch(addressServiceProvider)
+                                  .fetchStreets(city!)
+                                  .whenComplete(() => setState(() {}));
+                              controller.nextPage(
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          : () {},
                     ),
 
                     TextButton(
@@ -123,16 +136,21 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
             activePage: currentPage,
             title: "Wählen Sie Ihre Straße.",
             imagePath: "assets/images/bg2.png",
+            focusNode: streetFocusNode,
+            focusNode2: hNumberFocusNode,
             mainWidget: Column(
               spacing: 20,
               children: [
+                // DROPDOWN FOR STREETS
                 DropdownMenu<String>(
                   controller: streetEditingController,
                   focusNode: streetFocusNode,
+
                   requestFocusOnTap: true,
                   width: size.width - 40,
                   enableFilter: true,
                   hintText: "Straße",
+                  menuHeight: 200,
                   inputDecorationTheme: InputDecorationTheme(
                     filled: true,
                     fillColor: Colors.white,
@@ -148,36 +166,63 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                       height: 10,
                     ),
                   ),
-                  dropdownMenuEntries: [
-                    DropdownMenuEntry(value: 'Nürnberg', label: 'Nürnberg'),
-                    DropdownMenuEntry(value: 'Coesfeld', label: 'Coesfeld'),
-                    DropdownMenuEntry(value: 'Aachen', label: 'Aachen'),
-                  ],
-                  onSelected: (value) {
-                    street = value;
+                  dropdownMenuEntries: streets.map((street) {
+                    return DropdownMenuEntry<String>(
+                      value: street['id'].toString(),
+                      label: street['name'],
+                    );
+                  }).toList(),
+                  onSelected: (value) async {
+                    houseNr.clear();
+                    houseNr = await ref
+                        .watch(addressServiceProvider)
+                        .fetchHouseNumbers(city!, value!)
+                        .whenComplete(() => setState(() {}));
+
                     streetFocusNode.unfocus();
-                    print("Seçilen: $value");
+                    hNumberFocusNode.requestFocus();
                   },
                 ),
-
-                TextFormField(
+                //DROPDOWN FOR HOUSE NUMBERS
+                DropdownMenu<String>(
                   controller: hNumberEditingController,
-                  decoration: InputDecoration(
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        "assets/images/logo.png",
-                        width: 10,
-                        height: 10,
-                      ),
-                    ),
-                    hintText: "Hausnummer",
+                  focusNode: hNumberFocusNode,
+                  requestFocusOnTap: true,
+                  width: size.width - 40,
+                  enableFilter: true,
+                  hintText: "Hausnummer",
+                  menuHeight: 200,
+                  inputDecorationTheme: InputDecorationTheme(
+                    filled: true,
+                    fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    filled: true,
-                    fillColor: Colors.white,
                   ),
+                  leadingIcon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      "assets/images/logo.png",
+                      width: 10,
+                      height: 10,
+                    ),
+                  ),
+                  dropdownMenuEntries: houseNr.map((hNumber) {
+                    return DropdownMenuEntry<String>(
+                      value: hNumber['id'].toString(),
+                      label: hNumber['name'],
+                    );
+                  }).toList(),
+                  onSelected: (value) async {
+                    houseNr.clear();
+                    houseNr = await ref
+                        .watch(addressServiceProvider)
+                        .fetchHouseNumbers(city!, value!)
+                        .whenComplete(() => setState(() {}));
+
+                    streetFocusNode.unfocus();
+                    print("Seçilen: $value");
+                  },
                 ),
 
                 PrimaryButton(
@@ -200,13 +245,17 @@ class AddressSelectionTemplate extends StatefulWidget {
   final String imagePath;
   final String title;
   final Widget mainWidget;
+  final FocusNode focusNode;
+  final FocusNode? focusNode2;
 
-  AddressSelectionTemplate({
+  const AddressSelectionTemplate({
     super.key,
     required this.activePage,
     required this.imagePath,
     required this.title,
     required this.mainWidget,
+    required this.focusNode,
+    this.focusNode2,
   });
 
   @override
@@ -218,7 +267,7 @@ class _AddressSelectionTemplateState extends State<AddressSelectionTemplate> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
+    print(size.height);
     return Container(
       width: size.width,
       height: size.height,
@@ -252,7 +301,15 @@ class _AddressSelectionTemplateState extends State<AddressSelectionTemplate> {
             left: size.width * 0.5 - 25,
             child: PageIndicator(activePage: widget.activePage),
           ),
-          Positioned(bottom: 70, right: 20, child: BinWithEyes(size: 150)),
+          Positioned(
+            bottom:
+                widget.focusNode.hasFocus ||
+                    (widget.focusNode2 != null && widget.focusNode2!.hasFocus)
+                ? -200
+                : 70,
+            right: 20,
+            child: BinWithEyes(size: 150),
+          ),
         ],
       ),
     );
