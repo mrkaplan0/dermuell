@@ -1,7 +1,9 @@
 import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/provider/address_provider.dart';
 import 'package:dermuell/widgets/bin_with_eyes.dart';
+import 'package:dermuell/widgets/my_progress_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SelectAddress extends ConsumerStatefulWidget {
@@ -20,10 +22,11 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
   FocusNode streetFocusNode = FocusNode();
   FocusNode hNumberFocusNode = FocusNode();
   int currentPage = 0;
-  String? street, houseNumber;
+  String? streetID, houseNumberID;
   Map<String, dynamic>? city;
   List<Map<String, dynamic>> streets = [];
   List<Map<String, dynamic>> houseNr = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -99,7 +102,6 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                           (city) => city['id'].toString() == value,
                         )['name'];
                         cityFocusNode.unfocus();
-                        print("Seçilen: $value");
                       },
                     ),
 
@@ -107,10 +109,17 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                       text: "Weiter",
                       onPressed: city != null
                           ? () async {
+                              isLoading = true;
+                              showDialog(
+                                context: context,
+                                builder: (context) => MyProgressIndicator(),
+                              );
                               streets = await ref
                                   .watch(addressServiceProvider)
                                   .fetchStreets(city!)
                                   .whenComplete(() => setState(() {}));
+                              isLoading = false;
+                              Navigator.of(context).pop();
                               controller.nextPage(
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.easeInOut,
@@ -127,7 +136,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                 );
               },
               error: (err, stack) => Text('Error: $err'),
-              loading: () => Center(child: CircularProgressIndicator()),
+              loading: () => MyProgressIndicator(),
             ),
           ),
 
@@ -173,12 +182,19 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                     );
                   }).toList(),
                   onSelected: (value) async {
+                    streetID = value;
                     houseNr.clear();
+                    isLoading = true;
+                    showDialog(
+                      context: context,
+                      builder: (context) => MyProgressIndicator(),
+                    );
                     houseNr = await ref
                         .watch(addressServiceProvider)
-                        .fetchHouseNumbers(city!, value!)
+                        .fetchHouseNumbers(city!, streetID!)
                         .whenComplete(() => setState(() {}));
-
+                    isLoading = false;
+                    Navigator.of(context).pop();
                     streetFocusNode.unfocus();
                     hNumberFocusNode.requestFocus();
                   },
@@ -210,25 +226,53 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                   dropdownMenuEntries: houseNr.map((hNumber) {
                     return DropdownMenuEntry<String>(
                       value: hNumber['id'].toString(),
-                      label: hNumber['name'],
+                      label: hNumber['nr'].toString(),
                     );
                   }).toList(),
                   onSelected: (value) async {
-                    houseNr.clear();
-                    houseNr = await ref
-                        .watch(addressServiceProvider)
-                        .fetchHouseNumbers(city!, value!)
-                        .whenComplete(() => setState(() {}));
-
-                    streetFocusNode.unfocus();
-                    print("Seçilen: $value");
+                    houseNumberID = value;
+                    hNumberEditingController.text = houseNr
+                        .firstWhere(
+                          (hNumber) => hNumber['id'].toString() == value,
+                        )['nr']
+                        .toString();
+                    hNumberFocusNode.unfocus();
                   },
                 ),
 
                 PrimaryButton(
                   text: "Weiter",
                   onPressed: () {
-                    // Navigate to next page or perform action
+                    isLoading = true;
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text("Ist Ihre Adresse richtig?"),
+                        content: Text(
+                          "${streetEditingController.text} ${hNumberEditingController.text}, ${cityEditingController.text}",
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Abbrechen"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("OK"),
+                          ),
+                        ],
+                      ),
+                    );
+                    isLoading = false;
+                    // Navigator.of(context).pop();
+                    controller.nextPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
                   },
                 ),
               ],
@@ -267,7 +311,6 @@ class _AddressSelectionTemplateState extends State<AddressSelectionTemplate> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    print(size.height);
     return Container(
       width: size.width,
       height: size.height,

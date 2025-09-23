@@ -50,7 +50,6 @@ class AddressService {
       "https://${city['region']}-abfallapp.regioit.de/abfall-app-${city['region']}/rest/orte/${city["id"]}/strassen",
       options: Options(headers: {"content-type": "application/json"}),
     );
-    print(response.data);
 
     var streets = (response.data as List).map((e) {
       return {"id": e['id'], "name": e['name']};
@@ -63,15 +62,26 @@ class AddressService {
     Map<String, dynamic> city,
     String streetId,
   ) async {
+    // Parse streetId to int and handle potential null value
+    int? parsedStreetId = int.tryParse(streetId);
+    if (parsedStreetId == null) {
+      print("Invalid street ID: $streetId");
+    }
+
     var response = await _api.dio.get(
-      "https://${city['region']}-abfallapp.regioit.de/abfall-app-${city['region']}/rest/orte/${city["id"]}/strassen/$streetId",
+      "https://${city['region']}-abfallapp.regioit.de/abfall-app-${city['region']}/rest/strassen/$parsedStreetId",
       options: Options(headers: {"content-type": "application/json"}),
     );
-    print(response.data);
+    print(
+      "https://${city['region']}-abfallapp.regioit.de/abfall-app-${city['region']}/rest/strassen/$parsedStreetId",
+    );
+    print("Hey" + response.data.toString());
 
-    var houseNumbers = (response.data['hausNrList'] as List).map((e) {
-      return {"id": e['id'], "nr": e['nr']};
-    }).toList();
+    List<Map<String, dynamic>> houseNumbers =
+        (response.data['hausNrList'] as List)
+            .map((e) => e as Map<String, dynamic>)
+            .toList();
+
     // Return a list of house numbers based on the streetId from API
     return houseNumbers;
   }
