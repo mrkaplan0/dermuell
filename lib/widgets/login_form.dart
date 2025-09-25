@@ -150,7 +150,7 @@ class LoginForm extends ConsumerWidget {
         );
       }
     } catch (e) {
-      print('Login error: $e');
+      debugPrint('Login error: $e');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Ein Fehler ist aufgetreten: $e')));

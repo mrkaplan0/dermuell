@@ -1,3 +1,4 @@
+import 'package:dermuell/const/collection_types.dart';
 import 'package:flutter/material.dart';
 
 class XConst {
@@ -15,4 +16,24 @@ class XConst {
     color: fifthColor,
     fontFamily: 'FingerPaint',
   );
+
+  static InputDecorationTheme dropdownMenuDecoration = InputDecorationTheme(
+    filled: true,
+    fillColor: Colors.white,
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+  );
+
+  static Widget leadingIcon = Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Image.asset("assets/images/logo.png", width: 10, height: 10),
+  );
+
+  static String setCollTypeName(int id) {
+    for (var element in collectionsTypes) {
+      if (element['id'] == id) {
+        return element['name'].toString();
+      }
+    }
+    return "Unknown";
+  }
 }

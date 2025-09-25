@@ -1,10 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/provider/address_provider.dart';
-import 'package:dermuell/widgets/bin_with_eyes.dart';
+import 'package:dermuell/widgets/address_selection_template.dart';
 import 'package:dermuell/widgets/my_progress_indicator.dart';
+import 'package:dermuell/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 
 class SelectAddress extends ConsumerStatefulWidget {
   const SelectAddress({super.key});
@@ -26,6 +29,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
   Map<String, dynamic>? city;
   List<Map<String, dynamic>> streets = [];
   List<Map<String, dynamic>> houseNr = [];
+  List<Map<String, dynamic>> collectionTypes = [];
   bool isLoading = false;
 
   @override
@@ -73,21 +77,8 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                       menuHeight: 200,
                       enableFilter: true,
                       hintText: "Stadte",
-                      inputDecorationTheme: InputDecorationTheme(
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                      leadingIcon: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(
-                          "assets/images/logo.png",
-                          width: 10,
-                          height: 10,
-                        ),
-                      ),
+                      inputDecorationTheme: XConst.dropdownMenuDecoration,
+                      leadingIcon: XConst.leadingIcon,
                       dropdownMenuEntries: cities.map((city) {
                         return DropdownMenuEntry<String>(
                           value: city['id'].toString(),
@@ -154,27 +145,13 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                 DropdownMenu<String>(
                   controller: streetEditingController,
                   focusNode: streetFocusNode,
-
                   requestFocusOnTap: true,
                   width: size.width - 40,
                   enableFilter: true,
                   hintText: "Straße",
                   menuHeight: 200,
-                  inputDecorationTheme: InputDecorationTheme(
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                  ),
-                  leadingIcon: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(
-                      "assets/images/logo.png",
-                      width: 10,
-                      height: 10,
-                    ),
-                  ),
+                  inputDecorationTheme: XConst.dropdownMenuDecoration,
+                  leadingIcon: XConst.leadingIcon,
                   dropdownMenuEntries: streets.map((street) {
                     return DropdownMenuEntry<String>(
                       value: street['id'].toString(),
@@ -183,6 +160,11 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                   }).toList(),
                   onSelected: (value) async {
                     streetID = value;
+                    streetEditingController.text = streets
+                        .firstWhere(
+                          (street) => street['id'].toString() == value,
+                        )['name']
+                        .toString();
                     houseNr.clear();
                     isLoading = true;
                     showDialog(
@@ -199,6 +181,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                     hNumberFocusNode.requestFocus();
                   },
                 ),
+
                 //DROPDOWN FOR HOUSE NUMBERS
                 DropdownMenu<String>(
                   controller: hNumberEditingController,
@@ -208,21 +191,8 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                   enableFilter: true,
                   hintText: "Hausnummer",
                   menuHeight: 200,
-                  inputDecorationTheme: InputDecorationTheme(
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                  ),
-                  leadingIcon: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(
-                      "assets/images/logo.png",
-                      width: 10,
-                      height: 10,
-                    ),
-                  ),
+                  inputDecorationTheme: XConst.dropdownMenuDecoration,
+                  leadingIcon: XConst.leadingIcon,
                   dropdownMenuEntries: houseNr.map((hNumber) {
                     return DropdownMenuEntry<String>(
                       value: hNumber['id'].toString(),
@@ -244,36 +214,82 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                   text: "Weiter",
                   onPressed: () {
                     isLoading = true;
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text("Ist Ihre Adresse richtig?"),
-                        content: Text(
-                          "${streetEditingController.text} ${hNumberEditingController.text}, ${cityEditingController.text}",
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text("Abbrechen"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text("OK"),
-                          ),
-                        ],
-                      ),
-                    );
+                    confirmAddress(context);
                     isLoading = false;
-                    // Navigator.of(context).pop();
-                    controller.nextPage(
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
                   },
+                ),
+              ],
+            ),
+          ),
+
+          // THIRD PAGE
+          AddressSelectionTemplate(
+            activePage: currentPage,
+            title: "Wählen Sie Ihre Müllarten:",
+            imagePath: "assets/images/bg3.png",
+            focusNode: cityFocusNode,
+            mainWidget: Column(
+              spacing: 20,
+              children: [
+                Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: collectionTypes.length,
+                    itemBuilder: (context, index) {
+                      return CheckboxListTile(
+                        value: collectionTypes[index]["isChecked"],
+                        onChanged: (value) {
+                          setState(() {
+                            collectionTypes[index]["isChecked"] = value!;
+                          });
+                        },
+                        title: Text(
+                          collectionTypes[index]["name"],
+                          style: const TextStyle(color: Colors.black87),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                PrimaryButton(
+                  text: "Bestätigen",
+                  onPressed: city != null
+                      ? () async {
+                          isLoading = true;
+                          showDialog(
+                            context: context,
+                            builder: (context) => MyProgressIndicator(),
+                          );
+                          var list = collectionTypes
+                              .where((element) => element["isChecked"] == true)
+                              .toList();
+                          print(list);
+                          Map<String, dynamic> selectedAddress = {
+                            "city": city,
+                            "streetID": streetID,
+                            "houseNumberID": houseNumberID,
+                            "collectionTypes": list,
+                          };
+                          var myBox = Hive.box('dataBox');
+                          await myBox.put('address', selectedAddress);
+                          var dates = ref
+                              .read(collectionDatesProvider(selectedAddress))
+                              .value;
+
+                          if (dates != null) {
+                            await myBox.put('collectionDates', dates);
+                          }
+
+                          isLoading = false;
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pushReplacementNamed('/home');
+                        }
+                      : () {},
                 ),
               ],
             ),
@@ -282,141 +298,40 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
       ),
     );
   }
-}
 
-class AddressSelectionTemplate extends StatefulWidget {
-  final int activePage;
-  final String imagePath;
-  final String title;
-  final Widget mainWidget;
-  final FocusNode focusNode;
-  final FocusNode? focusNode2;
-
-  const AddressSelectionTemplate({
-    super.key,
-    required this.activePage,
-    required this.imagePath,
-    required this.title,
-    required this.mainWidget,
-    required this.focusNode,
-    this.focusNode2,
-  });
-
-  @override
-  State<AddressSelectionTemplate> createState() =>
-      _AddressSelectionTemplateState();
-}
-
-class _AddressSelectionTemplateState extends State<AddressSelectionTemplate> {
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      width: size.width,
-      height: size.height,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(widget.imagePath),
-          fit: BoxFit.cover,
+  Future<dynamic> confirmAddress(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Ist Ihre Adresse richtig?"),
+        content: Text(
+          "${streetEditingController.text} ${hNumberEditingController.text}, ${cityEditingController.text}",
         ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 150,
-            left: 20,
-            right: 20,
-            child: Text(
-              widget.title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 26.0,
-                height: 1.5,
-                color: Color.fromRGBO(33, 45, 82, 1),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("Abbrechen"),
           ),
-          Positioned(top: 200, left: 20, right: 20, child: widget.mainWidget),
 
-          Positioned(
-            bottom: 20,
-            left: size.width * 0.5 - 25,
-            child: PageIndicator(activePage: widget.activePage),
-          ),
-          Positioned(
-            bottom:
-                widget.focusNode.hasFocus ||
-                    (widget.focusNode2 != null && widget.focusNode2!.hasFocus)
-                ? -200
-                : 70,
-            right: 20,
-            child: BinWithEyes(size: 150),
+          //Confirmation of the address
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+
+              collectionTypes = await ref
+                  .read(addressServiceProvider)
+                  .fetchCollectionData(city!, houseNumberID!);
+              // setState(() {});
+              controller.nextPage(
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+            child: Text("OK"),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class PageIndicator extends StatelessWidget {
-  final int activePage;
-  const PageIndicator({super.key, required this.activePage});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: List.generate(
-        2,
-        (index) => Container(
-          width: index == activePage ? 22.0 : 10.0,
-          height: 10.0,
-          margin: EdgeInsets.only(right: 10.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              index == activePage ? 10.0 : 50.0,
-            ),
-            color: index == activePage
-                ? XConst.primaryColor
-                : XConst.primaryColor.withAlpha(50),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class PrimaryButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String text;
-
-  const PrimaryButton({super.key, required this.text, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      child: Container(
-        width: double.infinity,
-        height: 50,
-        decoration: BoxDecoration(
-          color: XConst.sixthColor,
-          borderRadius: BorderRadius.circular(12.0),
-          boxShadow: [
-            BoxShadow(
-              color: Color.fromRGBO(169, 176, 185, 0.42),
-              spreadRadius: 0,
-              blurRadius: 8.0,
-              offset: Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            text,
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          ),
-        ),
       ),
     );
   }

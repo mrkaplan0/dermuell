@@ -202,7 +202,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
     try {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState?.save();
-        print('$_username, $_email, $_password, $_verifyPasswort');
+        debugPrint('$_username, $_email, $_password, $_verifyPasswort');
         var authService = ref.read(authServiceProvider);
 
         var (result, error) = await authService.register(
@@ -225,7 +225,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
         }
       }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       // String errorMessage = _getErrorMessage(e);
 
       _showErrorDialog(context, e.toString());

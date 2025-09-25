@@ -5,8 +5,15 @@ import 'package:dermuell/pages/landing_page.dart';
 import 'package:dermuell/pages/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Hive for Flutter
+  await Hive.initFlutter();
+  await Hive.openBox('dataBox');
+
   runApp(ProviderScope(child: const MyApp()));
 }
 

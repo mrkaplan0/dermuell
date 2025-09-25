@@ -7,3 +7,16 @@ final citiesProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
   final addressService = ref.read(addressServiceProvider);
   return await addressService.fetchCities();
 });
+
+final collectionDatesProvider =
+    FutureProvider.family<List<Map<String, dynamic>>, Map<String, dynamic>>((
+      ref,
+      address,
+    ) async {
+      final addressService = ref.read(addressServiceProvider);
+      return await addressService.fetchAllCollectionDates(
+        address['city'],
+        address['houseNumberID'],
+        address['collectionTypes'],
+      );
+    });
