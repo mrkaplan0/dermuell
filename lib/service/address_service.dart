@@ -1,3 +1,5 @@
+import 'package:dermuell/const/constants.dart';
+import 'package:dermuell/model/event.dart';
 import 'package:dermuell/service/api_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +111,7 @@ class AddressService {
     return parsedHouseNumberId;
   }
 
-  Future<List<Map<String, dynamic>>> fetchAllCollectionDates(
+  Future<List<Event>> fetchAllCollectionDates(
     Map<String, dynamic> city,
     String houseNrID,
     List<Map<String, dynamic>> collectionTypes,
@@ -123,11 +125,20 @@ class AddressService {
       "https://${city['region']}-abfallapp.regioit.de/abfall-app-${city['region']}/rest/hausnummern/$parsedHouseNumberId/termine?$types",
       options: Options(headers: {"content-type": "application/json"}),
     );
+    print(
+      "https://${city['region']}-abfallapp.regioit.de/abfall-app-${city['region']}/rest/hausnummern/$parsedHouseNumberId/termine?$types",
+    );
+    List<Event> events = (response.data as List).map((e) {
+      return Event(
+        id: e['id'],
+        title: XConst.setCollTypeName(e['bezirk']['fraktionId']),
+        date: DateTime.parse(e['datum']),
+        fraktionID: e['bezirk']['fraktionId'],
+        gueltigAb: DateTime.parse(e['bezirk']['gueltigAb']),
+      );
+    }).toList();
 
-    print(response.data);
     // Return collection data based on the house number from API
-    return response.data
-        .map<Map<String, dynamic>>((e) => e as Map<String, dynamic>)
-        .toList();
+    return events;
   }
 }

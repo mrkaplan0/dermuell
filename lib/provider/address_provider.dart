@@ -1,3 +1,4 @@
+import 'package:dermuell/model/event.dart';
 import 'package:dermuell/service/address_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,7 +10,7 @@ final citiesProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
 });
 
 final collectionDatesProvider =
-    FutureProvider.family<List<Map<String, dynamic>>, Map<String, dynamic>>((
+    FutureProvider.family<List<Event>, Map<String, dynamic>>((
       ref,
       address,
     ) async {

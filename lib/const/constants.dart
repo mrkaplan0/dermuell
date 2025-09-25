@@ -1,5 +1,5 @@
-import 'package:dermuell/const/collection_types.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class XConst {
   static const Color primaryColor = Color(0xFF472C1B);
@@ -29,11 +29,50 @@ class XConst {
   );
 
   static String setCollTypeName(int id) {
+    var myBox = Hive.box('dataBox');
+    var collectionsTypes = myBox.get(
+      'address',
+      defaultValue: {},
+    )['collectionTypes'];
     for (var element in collectionsTypes) {
       if (element['id'] == id) {
         return element['name'].toString();
       }
     }
     return "Unknown";
+  }
+
+  static Color? getColorFromFraktionName(String fraktionName) {
+    switch (fraktionName.toLowerCase()) {
+      case 'bio':
+        return Colors.brown;
+      case 'gel':
+        return const Color.fromARGB(255, 207, 192, 49);
+      case 'alt' || 'pap':
+        return Colors.green;
+      case 'res':
+        return Colors.black;
+      case 'wei':
+        return Colors.red;
+      default:
+        return Colors.blueGrey;
+    }
+  }
+
+  static Icon getIconFromFraktionName(String fraktionName) {
+    switch (fraktionName.toLowerCase()) {
+      case 'bio':
+        return Icon(Icons.grass);
+      case 'gel':
+        return Icon(Icons.recycling);
+      case 'alt' || 'pap':
+        return Icon(Icons.menu_book);
+      case 'res':
+        return Icon(Icons.delete, color: Colors.white);
+      case 'wei':
+        return Icon(Icons.forest);
+      default:
+        return Icon(Icons.data_saver_off);
+    }
   }
 }
