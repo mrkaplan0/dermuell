@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/model/event.dart';
 import 'package:dermuell/provider/address_provider.dart';
+import 'package:dermuell/provider/notification_provider.dart';
 import 'package:dermuell/widgets/my_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -69,7 +70,24 @@ class _HomePageState extends ConsumerState<HomePage> {
       appBar: AppBar(
         title: const Text('Der Müll'),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications)),
+          IconButton(
+            onPressed: () {
+              ref
+                  .read(notificationServiceProvider)
+                  .scheduleNotificationsForEvents(items);
+              ref.read(notificationsEnabledProvider.notifier).state = true;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Bildirimler etkinleştirildi!',
+                    style: TextStyle(color: XConst.bgColor),
+                  ),
+                  backgroundColor: XConst.fourthColor,
+                ),
+              );
+            },
+            icon: const Icon(Icons.notifications),
+          ),
           IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
         ],
       ),
