@@ -141,7 +141,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class SecondPage extends StatefulWidget {
-  const SecondPage(this.payload, {this.data, Key? key}) : super(key: key);
+  const SecondPage(this.payload, {this.data, super.key});
 
   static const String routeName = '/secondPage';
 

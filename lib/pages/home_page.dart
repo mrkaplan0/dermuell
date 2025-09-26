@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/model/event.dart';
 import 'package:dermuell/provider/address_provider.dart';
@@ -29,6 +27,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.initState();
     myBox = Hive.box('dataBox');
     print(myBox.get('address'));
+    ref.read(notificationsEnabledProvider.notifier).state = myBox.get(
+      'notificationsEnabled',
+      defaultValue: false,
+    );
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier([]);
   }
@@ -66,27 +68,22 @@ class _HomePageState extends ConsumerState<HomePage> {
     AsyncValue<List<Event>> collectionDates = ref.watch(
       collectionDatesProvider(myBox.get('address')),
     );
+    var notificationsEnabled = ref.watch(notificationsEnabledProvider);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Der Müll'),
+        title: const Text(
+          'Der Müll',
+          style: TextStyle(fontFamily: 'FingerPaint'),
+        ),
         actions: [
           IconButton(
-            onPressed: () {
-              ref
-                  .read(notificationServiceProvider)
-                  .scheduleNotificationsForEvents(items);
-              ref.read(notificationsEnabledProvider.notifier).state = true;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Bildirimler etkinleştirildi!',
-                    style: TextStyle(color: XConst.bgColor),
-                  ),
-                  backgroundColor: XConst.fourthColor,
-                ),
-              );
-            },
-            icon: const Icon(Icons.notifications),
+            onPressed: () => notificationsEnabled
+                ? deactivateNotification()
+                : dialogForNotificationTime(activateNotification),
+            icon: notificationsEnabled
+                ? Icon(Icons.notifications)
+                : Icon(Icons.notifications_none),
           ),
           IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
         ],
@@ -98,6 +95,135 @@ class _HomePageState extends ConsumerState<HomePage> {
         AsyncValue(:final value, hasValue: true) => showDatas(value ?? []),
         _ => Center(child: MyProgressIndicator()),
       },
+    );
+  }
+
+  activateNotification() {
+    // Benachrichtigungen mit gewählter Zeit aktivieren
+    ref
+        .read(notificationServiceProvider)
+        .scheduleNotificationsForEvents(
+          items,
+          ref.read(selectedNotificationTimeProvider),
+        );
+    ref.read(notificationsEnabledProvider.notifier).state = true;
+    myBox.put('notificationsEnabled', true);
+    // Gewählte Zeit speichern
+    myBox.put(
+      'notificationTime',
+      '${ref.read(selectedNotificationTimeProvider).hour}:${ref.read(selectedNotificationTimeProvider).minute}',
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Benachrichtigungen um ${ref.read(selectedNotificationTimeProvider).format(context)} aktiviert!',
+          style: TextStyle(color: XConst.bgColor),
+        ),
+        backgroundColor: XConst.sixthColor,
+      ),
+    );
+  }
+
+  Future<void> dialogForNotificationTime(Function onConfirmed) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Benachrichtigungen aktivieren',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Möchten Sie Benachrichtigungen für bevorstehende Ereignisse erhalten?',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                // TimePicker hinzufügen
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Benachrichtigungszeit: '),
+                    TextButton(
+                      onPressed: () async {
+                        final TimeOfDay? picked = await showTimePicker(
+                          context: context,
+                          initialTime: ref.watch(
+                            selectedNotificationTimeProvider,
+                          ),
+                        );
+                        if (picked != null &&
+                            picked !=
+                                ref.watch(selectedNotificationTimeProvider)) {
+                          ref
+                                  .read(
+                                    selectedNotificationTimeProvider.notifier,
+                                  )
+                                  .state =
+                              picked;
+                        }
+                      },
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          return Text(
+                            ref
+                                .watch(selectedNotificationTimeProvider)
+                                .format(context),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Abbrechen'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        onConfirmed();
+                      },
+                      child: const Text('Aktivieren'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  deactivateNotification() {
+    ref.read(notificationServiceProvider).cancelAllNotifications();
+    ref.read(notificationsEnabledProvider.notifier).state = false;
+    myBox.put('notificationsEnabled', false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Benachrichtigungen deaktiviert!',
+          style: TextStyle(color: XConst.bgColor),
+        ),
+        backgroundColor: XConst.primaryColor,
+      ),
     );
   }
 
@@ -183,7 +309,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: ListTile(
-                      onTap: () => print('${value[index]}'),
+                      onTap: () => dialogForNotificationTime(
+                        () => setNotificationforAnEvent(event),
+                      ),
                       title: Text(event.title),
                       subtitle: Text(
                         '${event.date.day}.${event.date.month}.${event.date.year}',
@@ -204,6 +332,26 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ),
       ],
+    );
+  }
+
+  setNotificationforAnEvent(Event event) {
+    // Bildirim zamanını ayarla
+    ref
+        .read(notificationServiceProvider)
+        .scheduleNotificationForAnEvents(
+          event,
+          ref.read(selectedNotificationTimeProvider),
+        );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Benachrichtigung für ${_selectedEvents.value.first.title} um ${ref.read(selectedNotificationTimeProvider).format(context)} gesetzt!',
+          style: TextStyle(color: XConst.bgColor),
+        ),
+        backgroundColor: XConst.sixthColor,
+      ),
     );
   }
 }

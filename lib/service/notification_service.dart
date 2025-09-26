@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dermuell/model/event.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/src/material/time.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
-  // Singleton pattern için statik bir örnek
   static final NotificationService _notificationService =
       NotificationService._internal();
 
@@ -110,7 +110,6 @@ class NotificationService {
     );
   }
 
-  // Platforma özgü bildirim detaylarını oluşturan yardımcı metot
   NotificationDetails _notificationDetails() {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
@@ -130,46 +129,78 @@ class NotificationService {
     );
   }
 
-  // NotificationService sınıfına eklenecek metotlar
-
-  Future<void> scheduleNotificationsForEvents(List<Event> events) async {
-    // 1. Önceki tüm bildirimleri iptal et. Bu, silinmiş veya değiştirilmiş
-    // etkinliklere ait eski bildirimlerin kalmasını önler.
+  Future<void> scheduleNotificationsForEvents(
+    List<Event> events,
+    TimeOfDay notificationTime,
+  ) async {
+    // Clear existing notifications before scheduling new ones
     await cancelAllNotifications();
 
-    // 2. Her bir etkinlik için yeni bir bildirim planla.
+    //Make a plan for each event
     for (final event in events) {
-      // Bildirim zamanını hesapla: Etkinlikten bir gün önce, sabah 9:00
+      // Calculate the date and time for the notification (1 day before at 23:00)
       final scheduledDate = tz.TZDateTime(
         tz.local,
         event.date.year,
         event.date.month,
         event.date.day - 1,
-        23,
-        0,
+        notificationTime.hour,
+        notificationTime.minute,
         0,
       );
 
-      // Eğer hesaplanan tarih geçmişte ise, bildirim planlama.
+      // Only schedule if the date is in the future
       if (scheduledDate.isAfter(DateTime.now())) {
         await scheduleNotification(
-          id: event.id, // Etkinlik ID'sini bildirim ID'si olarak kullan
-          title: 'Yaklaşan Etkinlik Hatırlatıcısı',
-          body: 'Yarınki "${event.title}" etkinliğinizi unutmayın!',
+          id: event.id,
+          title: 'Nicht Vergessen',
+          body: 'Morgen ist der Abholungstag für ${event.title}',
           scheduledDate: scheduledDate,
           payload: event.id
-              .toString(), // Tıklandığında yönlendirme için ID'yi payload'a ekle
+              .toString(), // Add event ID as payload for navigation
         );
       }
     }
   }
 
-  // Tek bir bildirimi ID ile iptal etme
+  Future<void> scheduleNotificationForAnEvents(
+    Event event,
+    TimeOfDay notificationTime,
+  ) async {
+    // Clear existing notifications before scheduling new ones
+    await cancelNotification(event.id);
+
+    //Make a plan for  event
+
+    // Calculate the date and time for the notification (1 day before at 23:00)
+    final scheduledDate = tz.TZDateTime(
+      tz.local,
+      event.date.year,
+      event.date.month,
+      event.date.day - 1,
+      notificationTime.hour,
+      notificationTime.minute,
+      0,
+    );
+
+    // Only schedule if the date is in the future
+    if (scheduledDate.isAfter(DateTime.now())) {
+      await scheduleNotification(
+        id: event.id,
+        title: 'Nicht Vergessen',
+        body: 'Morgen ist der Abholungstag für ${event.title}',
+        scheduledDate: scheduledDate,
+        payload: event.id.toString(), // Add event ID as payload for navigation
+      );
+    }
+  }
+
+  // cancel a specific notification by its ID
   Future<void> cancelNotification(int id) async {
     await flutterLocalNotificationsPlugin.cancel(id);
   }
 
-  // Tüm planlanmış bildirimleri iptal etme
+  // cancel all notifications
   Future<void> cancelAllNotifications() async {
     await flutterLocalNotificationsPlugin.cancelAll();
   }

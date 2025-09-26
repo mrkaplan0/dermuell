@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:dermuell/const/constants.dart';
-import 'package:dermuell/pages/address/select_address.dart';
 import 'package:dermuell/widgets/bin_with_eyes.dart';
 import 'package:flutter/material.dart';
 
