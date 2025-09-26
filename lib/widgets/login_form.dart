@@ -3,6 +3,7 @@
 import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/pages/auth/register_page.dart';
 import 'package:dermuell/provider/auth_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,7 +17,7 @@ class LoginForm extends ConsumerWidget {
     caseSensitive: false,
   );
   final String _invalidPassword =
-      "Das Passwort muss mindestens 6 Zeichen lang sein";
+      "Das Passwort muss mindestens 6 Zeichen lang sein".tr();
   FocusNode focusNode = FocusNode();
   FocusNode focusNode2 = FocusNode();
 
@@ -31,7 +32,7 @@ class LoginForm extends ConsumerWidget {
           spacing: 20,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Anmelden', style: XConst.myBigTitleTextStyle),
+            Text('Anmelden'.tr(), style: XConst.myBigTitleTextStyle),
 
             TextFormField(
               initialValue: "test@test.com",
@@ -51,10 +52,10 @@ class LoginForm extends ConsumerWidget {
               validator: (value) {
                 final v = (value ?? '').trim();
                 if (v.isEmpty) {
-                  return 'Bitte eine gültige E-Mail-Adresse eingeben';
+                  return 'Bitte eine gültige E-Mail-Adresse eingeben'.tr();
                 }
                 if (!_emailRegex.hasMatch(v)) {
-                  return 'Bitte eine gültige E-Mail-Adresse eingeben';
+                  return 'Bitte eine gültige E-Mail-Adresse eingeben'.tr();
                 }
                 return null; // valid
               },
@@ -69,8 +70,8 @@ class LoginForm extends ConsumerWidget {
             TextFormField(
               initialValue: "password",
               focusNode: focusNode2,
-              decoration: const InputDecoration(
-                labelText: 'Passwort',
+              decoration: InputDecoration(
+                labelText: 'Passwort'.tr(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 40,
@@ -99,7 +100,7 @@ class LoginForm extends ConsumerWidget {
 
             ElevatedButton(
               onPressed: () => _login(context, ref),
-              child: const Text('Anmelden'),
+              child: Text('Anmelden'.tr()),
             ),
             TextButton(
               onPressed: () {
@@ -107,7 +108,7 @@ class LoginForm extends ConsumerWidget {
                   context,
                 ).push(MaterialPageRoute(builder: (context) => RegisterPage()));
               },
-              child: const Text("Registrieren"),
+              child: Text("Registrieren".tr()),
             ),
           ],
         ),
@@ -128,7 +129,8 @@ class LoginForm extends ConsumerWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Login fehlgeschlagen. Bitte versuchen Sie es erneut. Error: $error',
+                'Login fehlgeschlagen. Bitte versuchen Sie es erneut. Error: $error'
+                    .tr(),
               ),
             ),
           );
@@ -139,21 +141,21 @@ class LoginForm extends ConsumerWidget {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Willkommen ${user.name}!'),
+              content: Text('Willkommen ${user.name}!'.tr()),
               duration: Durations.medium1,
             ),
           );
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Bitte füllen Sie alle Felder aus')),
+          SnackBar(content: Text('Bitte füllen Sie alle Felder aus'.tr())),
         );
       }
     } catch (e) {
       debugPrint('Login error: $e');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Ein Fehler ist aufgetreten: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ein Fehler ist aufgetreten: $e'.tr())),
+      );
     }
   }
 }

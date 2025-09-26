@@ -3,6 +3,7 @@
 import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/main.dart';
 import 'package:dermuell/provider/auth_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,12 +24,12 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
   );
 
   final String _invalidPassword =
-      "Das Passwort muss mindestens 6 Zeichen lang sein";
-  final String _passwordLabelText = 'Passwort';
-  final String _password2LabelText = 'Passwort Wiederholung';
-  final String _wrongPassword = "Passwörter stimmen nicht überein.";
-  final String invalidEmailPrompt =
-      'Bitte eine gültige E-Mail-Adresse eingeben';
+      "Das Passwort muss mindestens 6 Zeichen lang sein".tr();
+  final String _passwordLabelText = 'Passwort'.tr();
+  final String _password2LabelText = 'Passwort Wiederholung'.tr();
+  final String _wrongPassword = "Passwörter stimmen nicht überein.".tr();
+  final String invalidEmailPrompt = 'Bitte eine gültige E-Mail-Adresse eingeben'
+      .tr();
 
   FocusNode focusNode = FocusNode();
   FocusNode focusNode2 = FocusNode();
@@ -45,11 +46,11 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
             spacing: 20,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Registrieren', style: XConst.myBigTitleTextStyle),
+              Text('Registrieren'.tr(), style: XConst.myBigTitleTextStyle),
 
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Benutzername',
+                decoration: InputDecoration(
+                  labelText: 'Benutzername'.tr(),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 40,
@@ -63,7 +64,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
                 validator: (value) {
                   _username = value!;
                   return value.isEmpty
-                      ? 'Bitte einen Benutzernamen eingeben'
+                      ? 'Bitte einen Benutzernamen eingeben'.tr()
                       : null;
                 },
                 onSaved: (String? value) {
@@ -112,13 +113,13 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
                 onPressed: () {
                   _register(context, ref);
                 },
-                child: const Text('Registrieren'),
+                child: Text('Registrieren'.tr()),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text("Haben Sie schon ein Konto?"),
+                child: Text("Haben Sie schon ein Konto?".tr()),
               ),
             ],
           ),
@@ -219,7 +220,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
         if (result) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('Super! Jezt anmelden!')));
+          ).showSnackBar(SnackBar(content: Text('Super! Jezt anmelden!'.tr())));
           // Navigate to home or another page after successful registration
           Navigator.pushReplacementNamed(context, '/login');
         }
@@ -244,7 +245,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("Abbrechen"),
+              child: Text("Abbrechen".tr()),
             ),
           ],
         );

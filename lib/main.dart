@@ -14,6 +14,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 void onDidReceiveNotificationResponse(NotificationResponse details) {
   final String? payload = details.payload;
   if (payload != null) {
@@ -32,8 +35,17 @@ void main() async {
   await initializeDateFormatting('de_DE', null);
   await Hive.initFlutter();
   await Hive.openBox('dataBox');
+  await EasyLocalization.ensureInitialized();
 
-  runApp(ProviderScope(child: MyApp()));
+  runApp(
+    EasyLocalization(
+      supportedLocales: [Locale('en', 'US'), Locale('de', 'DE')],
+      path:
+          'assets/translations', // <-- change the path of the translation files
+      fallbackLocale: Locale('en', 'US'),
+      child: ProviderScope(child: MyApp()),
+    ),
+  );
 }
 
 GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey();
@@ -121,9 +133,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       navigatorKey: rootNavigatorKey,
       debugShowCheckedModeBanner: false,
-      title: 'Der Müll',
+      title: 'Der Müll'.tr(),
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
@@ -165,7 +180,7 @@ class SecondPageState extends State<SecondPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Second Screen')),
+    appBar: AppBar(title: Text('Zweiter Bildschirm'.tr())),
     body: Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -176,7 +191,7 @@ class SecondPageState extends State<SecondPage> {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('Go back!'),
+            child: Text('Zurück'.tr()),
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dermuell/model/event.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/src/material/time.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -153,8 +154,8 @@ class NotificationService {
       if (scheduledDate.isAfter(DateTime.now())) {
         await scheduleNotification(
           id: event.id,
-          title: 'Nicht Vergessen',
-          body: 'Morgen ist der Abholungstag für ${event.title}',
+          title: 'Nicht Vergessen'.tr(),
+          body: 'Morgen ist der Abholungstag für ${event.title}'.tr(),
           scheduledDate: scheduledDate,
           payload: event.id
               .toString(), // Add event ID as payload for navigation
@@ -187,8 +188,8 @@ class NotificationService {
     if (scheduledDate.isAfter(DateTime.now())) {
       await scheduleNotification(
         id: event.id,
-        title: 'Nicht Vergessen',
-        body: 'Morgen ist der Abholungstag für ${event.title}',
+        title: 'Nicht Vergessen'.tr(),
+        body: 'Morgen ist der Abholungstag für ${event.title}'.tr(),
         scheduledDate: scheduledDate,
         payload: event.id.toString(), // Add event ID as payload for navigation
       );

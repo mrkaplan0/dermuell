@@ -5,6 +5,7 @@ import 'package:dermuell/provider/address_provider.dart';
 import 'package:dermuell/widgets/address_selection_template.dart';
 import 'package:dermuell/widgets/my_progress_indicator.dart';
 import 'package:dermuell/widgets/primary_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -61,7 +62,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
           // First Page
           AddressSelectionTemplate(
             activePage: currentPage,
-            title: "Wählen Sie Ihre Stadt:",
+            title: "Wählen Sie Ihre Stadt:".tr(),
             imagePath: "assets/images/bg1.png",
             focusNode: cityFocusNode,
             mainWidget: citiesList.when(
@@ -76,7 +77,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                       width: size.width - 40,
                       menuHeight: 200,
                       enableFilter: true,
-                      hintText: "Stadte",
+                      hintText: "Städte",
                       inputDecorationTheme: XConst.dropdownMenuDecoration,
                       leadingIcon: XConst.leadingIcon,
                       dropdownMenuEntries: cities.map((city) {
@@ -97,7 +98,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                     ),
 
                     PrimaryButton(
-                      text: "Weiter",
+                      text: "Weiter".tr(),
                       onPressed: city != null
                           ? () async {
                               isLoading = true;
@@ -121,7 +122,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
 
                     TextButton(
                       onPressed: () {},
-                      child: Text("Deine Stadt nicht gefunden?"),
+                      child: Text("Deine Stadt nicht gefunden?".tr()),
                     ),
                   ],
                 );
@@ -134,7 +135,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
           // SECOND PAGE
           AddressSelectionTemplate(
             activePage: currentPage,
-            title: "Wählen Sie Ihre Straße.",
+            title: "Wählen Sie Ihre Straße.".tr(),
             imagePath: "assets/images/bg2.png",
             focusNode: streetFocusNode,
             focusNode2: hNumberFocusNode,
@@ -148,7 +149,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                   requestFocusOnTap: true,
                   width: size.width - 40,
                   enableFilter: true,
-                  hintText: "Straße",
+                  hintText: "Straße".tr(),
                   menuHeight: 200,
                   inputDecorationTheme: XConst.dropdownMenuDecoration,
                   leadingIcon: XConst.leadingIcon,
@@ -189,7 +190,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                   requestFocusOnTap: true,
                   width: size.width - 40,
                   enableFilter: true,
-                  hintText: "Hausnummer",
+                  hintText: "Hausnummer".tr(),
                   menuHeight: 200,
                   inputDecorationTheme: XConst.dropdownMenuDecoration,
                   leadingIcon: XConst.leadingIcon,
@@ -211,7 +212,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                 ),
 
                 PrimaryButton(
-                  text: "Weiter",
+                  text: "Weiter".tr(),
                   onPressed: () {
                     isLoading = true;
                     confirmAddress(context);
@@ -225,7 +226,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
           // THIRD PAGE
           AddressSelectionTemplate(
             activePage: currentPage,
-            title: "Wählen Sie Ihre Müllarten:",
+            title: "Wählen Sie Ihre Müllarten:".tr(),
             imagePath: "assets/images/bg3.png",
             focusNode: cityFocusNode,
             mainWidget: Column(
@@ -257,7 +258,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
                   ),
                 ),
                 PrimaryButton(
-                  text: "Bestätigen",
+                  text: "Bestätigen".tr(),
                   onPressed: city != null
                       ? () async {
                           isLoading = true;
@@ -303,7 +304,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Ist Ihre Adresse richtig?"),
+        title: Text("Ist Ihre Adresse richtig?".tr()),
         content: Text(
           "${streetEditingController.text} ${hNumberEditingController.text}, ${cityEditingController.text}",
         ),
@@ -312,7 +313,7 @@ class _SelectAddressState extends ConsumerState<SelectAddress> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text("Abbrechen"),
+            child: Text("Abbrechen".tr()),
           ),
 
           //Confirmation of the address

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -65,7 +66,7 @@ class SplashScreen extends StatelessWidget {
               Positioned(
                 top: constraints.maxHeight - (constraints.maxHeight / 2) + 100,
                 child: Text(
-                  'Der Müll',
+                  'Der Müll'.tr(),
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,

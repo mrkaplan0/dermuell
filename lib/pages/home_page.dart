@@ -3,6 +3,7 @@ import 'package:dermuell/model/event.dart';
 import 'package:dermuell/provider/address_provider.dart';
 import 'package:dermuell/provider/notification_provider.dart';
 import 'package:dermuell/widgets/my_progress_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -72,8 +73,8 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Der Müll',
+        title: Text(
+          'Der Müll'.tr(),
           style: TextStyle(fontFamily: 'FingerPaint'),
         ),
         actions: [
@@ -90,7 +91,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
       body: switch (collectionDates) {
         AsyncValue(hasError: true) => Text(
-          'Oops, something unexpected happened',
+          'Oops, da ist etwas schiefgelaufen:'.tr(),
         ),
         AsyncValue(:final value, hasValue: true) => showDatas(value ?? []),
         _ => Center(child: MyProgressIndicator()),
@@ -116,10 +117,16 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'Benachrichtigungen um ${ref.read(selectedNotificationTimeProvider).format(context)} aktiviert!',
-          style: TextStyle(color: XConst.bgColor),
-        ),
+        content:
+            Text(
+              'Benachrichtigung für um gesetzt!',
+              style: TextStyle(color: XConst.bgColor),
+            ).tr(
+              args: [
+                (_selectedEvents.value.first.title),
+                (ref.read(selectedNotificationTimeProvider).format(context)),
+              ],
+            ),
         backgroundColor: XConst.sixthColor,
       ),
     );
@@ -135,13 +142,14 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Benachrichtigungen aktivieren',
+                Text(
+                  'Benachrichtigungen aktivieren'.tr(),
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'Möchten Sie Benachrichtigungen für bevorstehende Ereignisse erhalten?',
+                Text(
+                  'Möchten Sie Benachrichtigungen für bevorstehende Ereignisse erhalten?'
+                      .tr(),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
@@ -149,7 +157,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Benachrichtigungszeit: '),
+                    Text('Benachrichtigungszeit: '.tr()),
                     TextButton(
                       onPressed: () async {
                         final TimeOfDay? picked = await showTimePicker(
@@ -193,14 +201,14 @@ class _HomePageState extends ConsumerState<HomePage> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Abbrechen'),
+                      child: Text('Abbrechen'.tr()),
                     ),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                         onConfirmed();
                       },
-                      child: const Text('Aktivieren'),
+                      child: Text('Aktivieren'.tr()),
                     ),
                   ],
                 ),
@@ -219,7 +227,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Benachrichtigungen deaktiviert!',
+          'Benachrichtigungen deaktiviert!'.tr(),
           style: TextStyle(color: XConst.bgColor),
         ),
         backgroundColor: XConst.primaryColor,
@@ -346,10 +354,16 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'Benachrichtigung für ${_selectedEvents.value.first.title} um ${ref.read(selectedNotificationTimeProvider).format(context)} gesetzt!',
-          style: TextStyle(color: XConst.bgColor),
-        ),
+        content:
+            Text(
+              'Benachrichtigung für um gesetzt!',
+              style: TextStyle(color: XConst.bgColor),
+            ).tr(
+              args: [
+                (_selectedEvents.value.first.title),
+                (ref.read(selectedNotificationTimeProvider).format(context)),
+              ],
+            ),
         backgroundColor: XConst.sixthColor,
       ),
     );
