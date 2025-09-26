@@ -31,11 +31,11 @@ void onDidReceiveNotificationResponse(NotificationResponse details) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   await NotificationService().init();
   await initializeDateFormatting('de_DE', null);
   await Hive.initFlutter();
   await Hive.openBox('dataBox');
-  await EasyLocalization.ensureInitialized();
 
   runApp(
     EasyLocalization(
@@ -77,10 +77,11 @@ class _MyAppState extends State<MyApp> {
               >()
               ?.areNotificationsEnabled() ??
           false;
-
-      setState(() {
-        _notificationsEnabled = granted;
-      });
+      if (mounted) {
+        setState(() {
+          _notificationsEnabled = granted;
+        });
+      }
     }
   }
 
@@ -105,9 +106,11 @@ class _MyAppState extends State<MyApp> {
 
       final bool? grantedNotificationPermission = await androidImplementation
           ?.requestNotificationsPermission();
-      setState(() {
-        _notificationsEnabled = grantedNotificationPermission ?? false;
-      });
+      if (mounted) {
+        setState(() {
+          _notificationsEnabled = grantedNotificationPermission ?? false;
+        });
+      }
     }
   }
 

@@ -30,51 +30,65 @@ class AddressSelectionTemplate extends StatefulWidget {
 class _AddressSelectionTemplateState extends State<AddressSelectionTemplate> {
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      width: size.width,
-      height: size.height,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(widget.imagePath),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 150,
-            left: 20,
-            right: 20,
-            child: Text(
-              widget.title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 26.0,
-                height: 1.5,
-                color: Color.fromRGBO(33, 45, 82, 1),
-                fontWeight: FontWeight.w600,
-              ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          width: constraints.maxWidth,
+          height: constraints.maxHeight,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(widget.imagePath),
+              fit: BoxFit.cover,
             ),
           ),
-          Positioned(top: 200, left: 20, right: 20, child: widget.mainWidget),
+          child: Stack(
+            children: [
+              Positioned(
+                top: 150,
+                left: 20,
+                right: 20,
+                child: Text(
+                  widget.title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 26.0,
+                    height: 1.5,
+                    color: Color.fromRGBO(33, 45, 82, 1),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
 
-          Positioned(
-            bottom: 20,
-            left: size.width * 0.5 - 25,
-            child: PageIndicator(activePage: widget.activePage),
+              Positioned(
+                bottom:
+                    widget.focusNode.hasFocus ||
+                        (widget.focusNode2 != null &&
+                            widget.focusNode2!.hasFocus)
+                    ? -200
+                    : 20,
+                left: constraints.maxWidth * 0.5 - 25,
+                child: PageIndicator(activePage: widget.activePage),
+              ),
+              Positioned(
+                bottom:
+                    widget.focusNode.hasFocus ||
+                        (widget.focusNode2 != null &&
+                            widget.focusNode2!.hasFocus)
+                    ? -200
+                    : 70,
+                right: 20,
+                child: BinWithEyes(size: 150),
+              ),
+              Positioned(
+                top: 200,
+                left: 20,
+                right: 20,
+                child: widget.mainWidget,
+              ),
+            ],
           ),
-          Positioned(
-            bottom:
-                widget.focusNode.hasFocus ||
-                    (widget.focusNode2 != null && widget.focusNode2!.hasFocus)
-                ? -200
-                : 70,
-            right: 20,
-            child: BinWithEyes(size: 150),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
