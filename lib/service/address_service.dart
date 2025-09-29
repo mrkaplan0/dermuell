@@ -82,25 +82,41 @@ class AddressService {
     return houseNumbers;
   }
 
-  Future<List<Map<String, dynamic>>> fetchCollectionData(
+  Future<List<Map<String, dynamic>>> fetchCollectionTypesForStreet(
     Map<String, dynamic> city,
 
-    String houseNrID,
+    String? houseNrID,
   ) async {
     // Parse streetId to int and handle potential null value
-    int? parsedHouseNumberId = parseIDToInt(houseNrID);
-    //https://aachen-abfallapp.regioit.de/abfall-app-aachen/rest/hausnummern/11156521/fraktionen
-    var response = await _api.dio.get(
-      "https://${city['region']}-abfallapp.regioit.de/abfall-app-${city['region']}/rest/hausnummern/$parsedHouseNumberId/fraktionen",
-      options: Options(headers: {"content-type": "application/json"}),
-    );
-    var list = (response.data as List).map((e) {
-      e["isChecked"] = false;
-      return e as Map<String, dynamic>;
-    }).toList();
-    print(list);
-    // Return collection data based on the house number from API
-    return list;
+    if (houseNrID != null) {
+      int? parsedHouseNumberId = parseIDToInt(houseNrID);
+
+      //https://aachen-abfallapp.regioit.de/abfall-app-aachen/rest/hausnummern/11156521/fraktionen
+      var response = await _api.dio.get(
+        "https://${city['region']}-abfallapp.regioit.de/abfall-app-${city['region']}/rest/hausnummern/$parsedHouseNumberId/fraktionen",
+        options: Options(headers: {"content-type": "application/json"}),
+      );
+      var list = (response.data as List).map((e) {
+        e["isChecked"] = false;
+        return e as Map<String, dynamic>;
+      }).toList();
+      print(list);
+      // Return collection data based on the house number from API
+      return list;
+    } else {
+      //https://zew2-abfallapp.regioit.de/abfall-app-zew2/rest/strassen/17696371/fraktionen
+      var response = await _api.dio.get(
+        "https://${city['region']}-abfallapp.regioit.de/abfall-app-${city['region']}/rest/strassen/${city['streetID']}/fraktionen",
+        options: Options(headers: {"content-type": "application/json"}),
+      );
+      var list = (response.data as List).map((e) {
+        e["isChecked"] = false;
+        return e as Map<String, dynamic>;
+      }).toList();
+      print(list);
+      // Return collection data based on the street number from API
+      return list;
+    }
   }
 
   int? parseIDToInt(String houseNrID) {
@@ -111,22 +127,22 @@ class AddressService {
     return parsedHouseNumberId;
   }
 
-  Future<List<Event>> fetchAllCollectionDates(
-    Map<String, dynamic> city,
-    String houseNrID,
-    List<Map<String, dynamic>> collectionTypes,
+  Future<List<Event>> fetchAllCollectionEventsWithHouseNrID(
+    Map<String, dynamic> addressInfos,
   ) async {
     // Parse streetId to int and handle potential null value
-    int? parsedHouseNumberId = parseIDToInt(houseNrID);
+    int? parsedHouseNumberId = parseIDToInt(addressInfos['houseNumberID']);
     //https://aachen-abfallapp.regioit.de/abfall-app-aachen/rest/hausnummern/11156521/termine?fraktion=3&fraktion=4
-    String types = collectionTypes.map((e) => "fraktion=${e['id']}").join("&");
+    String types = addressInfos['collectionTypes']
+        .map((e) => "fraktion=${e['id']}")
+        .join("&");
     print(types);
     var response = await _api.dio.get(
-      "https://${city['region']}-abfallapp.regioit.de/abfall-app-${city['region']}/rest/hausnummern/$parsedHouseNumberId/termine?$types",
+      "https://${addressInfos['city']['region']}-abfallapp.regioit.de/abfall-app-${addressInfos['city']['region']}/rest/hausnummern/$parsedHouseNumberId/termine?$types",
       options: Options(headers: {"content-type": "application/json"}),
     );
     print(
-      "https://${city['region']}-abfallapp.regioit.de/abfall-app-${city['region']}/rest/hausnummern/$parsedHouseNumberId/termine?$types",
+      "https://${addressInfos['city']['region']}-abfallapp.regioit.de/abfall-app-${addressInfos['city']['region']}/rest/hausnummern/$parsedHouseNumberId/termine?$types",
     );
     List<Event> events = (response.data as List).map((e) {
       return Event(
@@ -139,6 +155,37 @@ class AddressService {
     }).toList();
 
     // Return collection data based on the house number from API
+    return events;
+  }
+
+  Future<List<Event>> fetchAllCollectionEventsWithStreetID(
+    Map<String, dynamic> addressInfos,
+  ) async {
+    // Parse streetId to int and handle potential null value
+    int? parsedStreetId = parseIDToInt(addressInfos['streetID']);
+    //https://aachen-abfallapp.regioit.de/abfall-app-aachen/rest/hausnummern/11156521/termine?fraktion=3&fraktion=4
+    String types = addressInfos['collectionTypes']
+        .map((e) => "fraktion=${e['id']}")
+        .join("&");
+    print(types);
+    var response = await _api.dio.get(
+      "https://${addressInfos['city']['region']}-abfallapp.regioit.de/abfall-app-${addressInfos['city']['region']}/rest/strassen/$parsedStreetId/termine?$types",
+      options: Options(headers: {"content-type": "application/json"}),
+    );
+    print(
+      "https://${addressInfos['city']['region']}-abfallapp.regioit.de/abfall-app-${addressInfos['city']['region']}/rest/strassen/$parsedStreetId/termine?$types",
+    );
+    List<Event> events = (response.data as List).map((e) {
+      return Event(
+        id: e['id'],
+        title: XConst.setCollTypeName(e['bezirk']['fraktionId']),
+        date: DateTime.parse(e['datum']),
+        fraktionID: e['bezirk']['fraktionId'],
+        gueltigAb: DateTime.parse(e['bezirk']['gueltigAb']),
+      );
+    }).toList();
+
+    // Return collection data based on the street from API
     return events;
   }
 }

@@ -54,6 +54,8 @@ class XConst {
         return Colors.black;
       case 'wei':
         return Colors.red;
+      case 'grü':
+        return Colors.green[200];
       default:
         return Colors.blueGrey;
     }
@@ -71,6 +73,8 @@ class XConst {
         return Icon(Icons.delete, color: Colors.white);
       case 'wei':
         return Icon(Icons.forest);
+      case 'grü':
+        return Icon(Icons.eco);
       default:
         return Icon(Icons.data_saver_off);
     }

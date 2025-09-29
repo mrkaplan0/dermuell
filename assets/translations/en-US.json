@@ -1,4 +1,4 @@
-    {"Der Müll": "The Trash",
+    {"Der Müll": "Der Müll",
     "Wählen Sie Ihre Stadt:": "Select your city:",
     "Städte": "Cities",
     "Weiter": "Continue",
@@ -16,5 +16,7 @@
     "Benachrichtigungszeit: ": "Notification time: ",
     "Aktivieren": "Enable",
     "Benachrichtigungen deaktiviert!": "Notifications disabled!",
-    "Benachrichtigung für um gesetzt!": "Notification for {} set to {}!"
+    "Benachrichtigung für um gesetzt!": "Notification for {} set to {}!",
+    "Nicht Vergessen": "Don't forget",
+    "Morgen ist der Abholungstag für": "Tomorrow is the collection day for {}!"
 }

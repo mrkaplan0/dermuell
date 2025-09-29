@@ -9,7 +9,7 @@ class AddressSelectionTemplate extends StatefulWidget {
   final String imagePath;
   final String title;
   final Widget mainWidget;
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
   final FocusNode? focusNode2;
 
   const AddressSelectionTemplate({
@@ -18,7 +18,7 @@ class AddressSelectionTemplate extends StatefulWidget {
     required this.imagePath,
     required this.title,
     required this.mainWidget,
-    required this.focusNode,
+    this.focusNode,
     this.focusNode2,
   });
 
@@ -61,7 +61,7 @@ class _AddressSelectionTemplateState extends State<AddressSelectionTemplate> {
 
               Positioned(
                 bottom:
-                    widget.focusNode.hasFocus ||
+                    (widget.focusNode != null && widget.focusNode!.hasFocus) ||
                         (widget.focusNode2 != null &&
                             widget.focusNode2!.hasFocus)
                     ? -200
@@ -71,7 +71,7 @@ class _AddressSelectionTemplateState extends State<AddressSelectionTemplate> {
               ),
               Positioned(
                 bottom:
-                    widget.focusNode.hasFocus ||
+                    (widget.focusNode != null && widget.focusNode!.hasFocus) ||
                         (widget.focusNode2 != null &&
                             widget.focusNode2!.hasFocus)
                     ? -200

@@ -28,10 +28,12 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.initState();
     myBox = Hive.box('dataBox');
     print(myBox.get('address'));
-    ref.read(notificationsEnabledProvider.notifier).state = myBox.get(
-      'notificationsEnabled',
-      defaultValue: false,
-    );
+    Future.microtask(() {
+      ref.read(notificationsEnabledProvider.notifier).state = myBox.get(
+        'notificationsEnabled',
+        defaultValue: false,
+      );
+    });
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier([]);
   }
@@ -67,7 +69,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     AsyncValue<List<Event>> collectionDates = ref.watch(
-      collectionDatesProvider(myBox.get('address')),
+      collectionEventsProvider(myBox.get('address')),
     );
     var notificationsEnabled = ref.watch(notificationsEnabledProvider);
 
@@ -91,7 +93,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
       body: switch (collectionDates) {
         AsyncValue(hasError: true) => Text(
-          'Oops, da ist etwas schiefgelaufen:'.tr(),
+          'Oops, da ist etwas schiefgelaufen: ${collectionDates.error}'.tr(),
         ),
         AsyncValue(:final value, hasValue: true) => showDatas(value ?? []),
         _ => Center(child: MyProgressIndicator()),
@@ -117,16 +119,10 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content:
-            Text(
-              'Benachrichtigung für um gesetzt!',
-              style: TextStyle(color: XConst.bgColor),
-            ).tr(
-              args: [
-                (_selectedEvents.value.first.title),
-                (ref.read(selectedNotificationTimeProvider).format(context)),
-              ],
-            ),
+        content: Text(
+          'Benachrichtigungen um ${ref.read(selectedNotificationTimeProvider).format(context)} aktiviert!',
+          style: TextStyle(color: XConst.bgColor),
+        ),
         backgroundColor: XConst.sixthColor,
       ),
     );
@@ -142,14 +138,13 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  'Benachrichtigungen aktivieren'.tr(),
+                const Text(
+                  'Benachrichtigungen aktivieren',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  'Möchten Sie Benachrichtigungen für bevorstehende Ereignisse erhalten?'
-                      .tr(),
+                const Text(
+                  'Möchten Sie Benachrichtigungen für bevorstehende Ereignisse erhalten?',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
@@ -157,7 +152,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Benachrichtigungszeit: '.tr()),
+                    const Text('Benachrichtigungszeit: '),
                     TextButton(
                       onPressed: () async {
                         final TimeOfDay? picked = await showTimePicker(
@@ -201,14 +196,14 @@ class _HomePageState extends ConsumerState<HomePage> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text('Abbrechen'.tr()),
+                      child: const Text('Abbrechen'),
                     ),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                         onConfirmed();
                       },
-                      child: Text('Aktivieren'.tr()),
+                      child: const Text('Aktivieren'),
                     ),
                   ],
                 ),
@@ -227,7 +222,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Benachrichtigungen deaktiviert!'.tr(),
+          'Benachrichtigungen deaktiviert!',
           style: TextStyle(color: XConst.bgColor),
         ),
         backgroundColor: XConst.primaryColor,
@@ -354,16 +349,10 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content:
-            Text(
-              'Benachrichtigung für um gesetzt!',
-              style: TextStyle(color: XConst.bgColor),
-            ).tr(
-              args: [
-                (_selectedEvents.value.first.title),
-                (ref.read(selectedNotificationTimeProvider).format(context)),
-              ],
-            ),
+        content: Text(
+          'Benachrichtigung für ${_selectedEvents.value.first.title} um ${ref.read(selectedNotificationTimeProvider).format(context)} gesetzt!',
+          style: TextStyle(color: XConst.bgColor),
+        ),
         backgroundColor: XConst.sixthColor,
       ),
     );

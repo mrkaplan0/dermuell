@@ -189,7 +189,7 @@ class NotificationService {
       await scheduleNotification(
         id: event.id,
         title: 'Nicht Vergessen'.tr(),
-        body: 'Morgen ist der Abholungstag für ${event.title}'.tr(),
+        body: 'Morgen ist der Abholungstag für'.tr(args: [" ${event.title}"]),
         scheduledDate: scheduledDate,
         payload: event.id.toString(), // Add event ID as payload for navigation
       );
