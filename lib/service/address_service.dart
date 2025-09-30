@@ -100,7 +100,7 @@ class AddressService {
         e["isChecked"] = false;
         return e as Map<String, dynamic>;
       }).toList();
-      print(list);
+
       // Return collection data based on the house number from API
       return list;
     } else {
@@ -113,7 +113,7 @@ class AddressService {
         e["isChecked"] = false;
         return e as Map<String, dynamic>;
       }).toList();
-      print(list);
+
       // Return collection data based on the street number from API
       return list;
     }
@@ -136,14 +136,12 @@ class AddressService {
     String types = addressInfos['collectionTypes']
         .map((e) => "fraktion=${e['id']}")
         .join("&");
-    print(types);
+
     var response = await _api.dio.get(
       "https://${addressInfos['city']['region']}-abfallapp.regioit.de/abfall-app-${addressInfos['city']['region']}/rest/hausnummern/$parsedHouseNumberId/termine?$types",
       options: Options(headers: {"content-type": "application/json"}),
     );
-    print(
-      "https://${addressInfos['city']['region']}-abfallapp.regioit.de/abfall-app-${addressInfos['city']['region']}/rest/hausnummern/$parsedHouseNumberId/termine?$types",
-    );
+
     List<Event> events = (response.data as List).map((e) {
       return Event(
         id: e['id'],
@@ -167,14 +165,12 @@ class AddressService {
     String types = addressInfos['collectionTypes']
         .map((e) => "fraktion=${e['id']}")
         .join("&");
-    print(types);
+
     var response = await _api.dio.get(
       "https://${addressInfos['city']['region']}-abfallapp.regioit.de/abfall-app-${addressInfos['city']['region']}/rest/strassen/$parsedStreetId/termine?$types",
       options: Options(headers: {"content-type": "application/json"}),
     );
-    print(
-      "https://${addressInfos['city']['region']}-abfallapp.regioit.de/abfall-app-${addressInfos['city']['region']}/rest/strassen/$parsedStreetId/termine?$types",
-    );
+
     List<Event> events = (response.data as List).map((e) {
       return Event(
         id: e['id'],

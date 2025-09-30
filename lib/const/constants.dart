@@ -43,44 +43,45 @@ class XConst {
   }
 
   static Color? getColorFromFraktionName(String fraktionName) {
-    switch (fraktionName.toLowerCase()) {
-      case 'bio':
-        return Colors.brown;
-      case 'gel':
-        return const Color.fromARGB(255, 207, 192, 49);
-      case 'alt' || 'pap':
-        return Colors.green;
-      case 'res':
-        return Colors.black;
-      case 'wei':
-        return Colors.red;
-      case 'grü':
-        return Colors.green[200];
-      case 'gla':
-        return Colors.blue;
-      default:
-        return Colors.blueGrey;
+    var frNameLower = fraktionName.toLowerCase();
+    print(frNameLower.contains('rest'));
+    if (frNameLower.contains('bio')) {
+      return Colors.brown;
+    } else if (frNameLower.contains('gelbe')) {
+      return const Color.fromARGB(255, 207, 192, 49);
+    } else if (frNameLower.contains('alt') || frNameLower.contains('pap')) {
+      return Colors.green;
+    } else if (frNameLower.contains('rest')) {
+      return Colors.black;
+    } else if (frNameLower.contains('wei')) {
+      return Colors.red;
+    } else if (frNameLower.contains('grü')) {
+      return Colors.green[200];
+    } else if (frNameLower.contains('glass')) {
+      return Colors.blue;
+    } else {
+      return Colors.blueGrey;
     }
   }
 
   static Icon getIconFromFraktionName(String fraktionName) {
-    switch (fraktionName.toLowerCase()) {
-      case 'bio':
-        return Icon(Icons.grass);
-      case 'gel':
-        return Icon(Icons.recycling);
-      case 'alt' || 'pap':
-        return Icon(Icons.menu_book);
-      case 'res':
-        return Icon(Icons.delete, color: Colors.white);
-      case 'wei':
-        return Icon(Icons.forest);
-      case 'grü':
-        return Icon(Icons.eco);
-      case 'gla':
-        return Icon(Icons.wine_bar);
-      default:
-        return Icon(Icons.data_saver_off);
+    var frNameLower = fraktionName.toLowerCase();
+    if (frNameLower.contains('bio')) {
+      return Icon(Icons.grass);
+    } else if (frNameLower.contains('gelbe')) {
+      return Icon(Icons.recycling);
+    } else if (frNameLower.contains('alt') || frNameLower.contains('pap')) {
+      return Icon(Icons.menu_book);
+    } else if (frNameLower.contains('rest')) {
+      return Icon(Icons.delete, color: Colors.white);
+    } else if (frNameLower.contains('wei')) {
+      return Icon(Icons.forest);
+    } else if (frNameLower.contains('grü')) {
+      return Icon(Icons.eco);
+    } else if (frNameLower.contains('glass')) {
+      return Icon(Icons.wine_bar);
+    } else {
+      return Icon(Icons.data_saver_off);
     }
   }
 }

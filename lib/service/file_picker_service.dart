@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dermuell/model/event.dart';
 import 'package:dermuell/utils/ics_utils.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 
@@ -18,11 +18,10 @@ class FilePickerService {
 
       if (result != null && result.files.single.path != null) {
         String filePath = result.files.single.path!;
-        print("Selected file path: $filePath");
-        File file = File(result.files.single.path!);
+
+        File file = File(filePath);
         final icsLines = await file.readAsLines();
         final iCalendar = ICalendar.fromLines(icsLines);
-        print("Parsed iCalendar data: ${iCalendar.data}");
 
         final vevents = iCalendar.data.where(
           (component) => component['type'] == 'VEVENT',
@@ -42,11 +41,11 @@ class FilePickerService {
         return true;
       } else {
         // User canceled the picker
-        print("File picking was canceled by the user.");
+        debugPrint("File picking was canceled by the user.");
         return false;
       }
     } catch (e) {
-      print("Error picking file: $e");
+      debugPrint("Error picking file: $e");
       return false;
     }
   }

@@ -28,7 +28,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     super.initState();
     myBox = Hive.box('dataBox');
-    print(myBox.get('address'));
+
     Future.microtask(() {
       ref.read(notificationsEnabledProvider.notifier).state = myBox.get(
         'notificationsEnabled',
@@ -286,7 +286,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: XConst.getColorFromFraktionName(
-                                  events[index].title.substring(0, 3),
+                                  events[index].title,
                                 ),
                               ),
                             );
@@ -328,11 +328,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                       ),
                       leading: CircleAvatar(
                         backgroundColor: XConst.getColorFromFraktionName(
-                          event.title.substring(0, 3),
+                          event.title,
                         ),
-                        child: XConst.getIconFromFraktionName(
-                          event.title.substring(0, 3),
-                        ),
+                        child: XConst.getIconFromFraktionName(event.title),
                       ),
                     ),
                   );

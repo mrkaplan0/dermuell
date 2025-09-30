@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 
 class IcsUtils {
@@ -15,7 +16,7 @@ class IcsUtils {
       }
       return DateTime.parse(dtString);
     } catch (e) {
-      print('Error parsing IcsDateTime string: "$dtString". Error: $e');
+      debugPrint('Error parsing IcsDateTime string: "$dtString". Error: $e');
       return null;
     }
   }

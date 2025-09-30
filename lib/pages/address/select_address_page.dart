@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-import 'dart:io';
 
 import 'package:dermuell/provider/address_provider.dart';
 import 'package:dermuell/service/file_picker_service.dart';
@@ -195,7 +194,7 @@ class _SelectAddressState extends ConsumerState<SelectAddressPage> {
                       } finally {
                         Navigator.of(context).pop();
                       }
-                      print(houseNr);
+
                       isLoading = false;
 
                       _streetFocusNode.unfocus();
