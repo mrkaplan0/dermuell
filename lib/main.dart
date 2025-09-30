@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dermuell/const/constants.dart';
+import 'package:dermuell/model/event.dart';
 import 'package:dermuell/pages/auth/login_page.dart';
 import 'package:dermuell/pages/home_page.dart';
 import 'package:dermuell/pages/landing_page.dart';
@@ -35,6 +36,10 @@ void main() async {
   await NotificationService().init();
   await initializeDateFormatting('de_DE', null);
   await Hive.initFlutter();
+
+  // Register the Event adapter
+  Hive.registerAdapter(EventAdapter());
+
   await Hive.openBox('dataBox');
 
   runApp(

@@ -56,6 +56,8 @@ class XConst {
         return Colors.red;
       case 'grü':
         return Colors.green[200];
+      case 'gla':
+        return Colors.blue;
       default:
         return Colors.blueGrey;
     }
@@ -75,6 +77,8 @@ class XConst {
         return Icon(Icons.forest);
       case 'grü':
         return Icon(Icons.eco);
+      case 'gla':
+        return Icon(Icons.wine_bar);
       default:
         return Icon(Icons.data_saver_off);
     }

@@ -36,7 +36,7 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
     super.initState();
     _updateFilteredItems();
 
-    // Controller'a listener ekleyerek arama sorgusunu takip et
+    // Add listener to controller to track search query
     widget.controller.addListener(_onSearchChanged);
   }
 
@@ -48,10 +48,16 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
 
   void _onSearchChanged() {
     final query = widget.controller.text;
+
+    // Ignore "Load more..." text
+    if (query == 'Mehr laden...') {
+      return;
+    }
+
     if (query != currentQuery) {
       setState(() {
         currentQuery = query;
-        currentPage = 0; // Arama yapıldığında sayfayı sıfırla
+        currentPage = 0; // Reset page only when actual search is performed
         _updateFilteredItems(query);
       });
     }
@@ -60,7 +66,7 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
   void _updateFilteredItems([String? query]) {
     final searchQuery = query ?? currentQuery;
 
-    // Önce filtreleme yap
+    // First, filter the items
     final filtered = widget.items
         .where(
           (item) => widget
@@ -70,7 +76,15 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
         )
         .toList();
 
-    // Sonra pagination uygula
+    // Add alphabetical sorting
+    filtered.sort(
+      (a, b) => widget
+          .labelBuilder(a)
+          .toLowerCase()
+          .compareTo(widget.labelBuilder(b).toLowerCase()),
+    );
+
+    // Then apply pagination
     final startIndex = currentPage * itemsPerPage;
     final endIndex = ((currentPage + 1) * itemsPerPage).clamp(
       0,
@@ -78,10 +92,20 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
     );
 
     setState(() {
-      filteredItems = filtered.sublist(
-        startIndex.clamp(0, filtered.length),
-        endIndex,
-      );
+      if (currentPage == 0) {
+        // First page or new search - completely replace the list
+        filteredItems = filtered.sublist(
+          startIndex.clamp(0, filtered.length),
+          endIndex,
+        );
+      } else {
+        // Load more - add to existing list
+        final newItems = filtered.sublist(
+          startIndex.clamp(0, filtered.length),
+          endIndex,
+        );
+        filteredItems.addAll(newItems);
+      }
     });
   }
 
@@ -99,8 +123,8 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
     if ((currentPage + 1) * itemsPerPage < totalFiltered) {
       setState(() {
         currentPage++;
-        _updateFilteredItems();
       });
+      _updateFilteredItems();
     }
   }
 
@@ -125,19 +149,24 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
                 label: widget.labelBuilder(item),
               );
             }),
-            // Daha fazla yükleme seçeneği
             if (_hasMoreItems())
               DropdownMenuEntry<String>(
                 value: 'load_more',
-                label: 'Daha fazla yükle...',
+                label: 'Mehr laden...',
                 style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all(Colors.grey),
+                  foregroundColor: WidgetStateProperty.all(Colors.grey),
                 ),
               ),
           ],
           onSelected: (value) {
             if (value == 'load_more') {
               _loadMore();
+
+              // Clear "Load more..." text from controller
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                widget.controller.text = currentQuery;
+              });
+
               return;
             }
 

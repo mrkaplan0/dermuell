@@ -1,5 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:io';
+
 import 'package:dermuell/provider/address_provider.dart';
+import 'package:dermuell/service/file_picker_service.dart';
 import 'package:dermuell/widgets/address_selection_template.dart';
 import 'package:dermuell/widgets/my_progress_indicator.dart';
 import 'package:dermuell/widgets/primary_button.dart';
@@ -106,7 +109,45 @@ class _SelectAddressState extends ConsumerState<SelectAddressPage> {
                     ),
 
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Stadt nicht gefunden?".tr()),
+                            content: Text(
+                              "Importieren Sie Ihre Termin im ics format.".tr(),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Abbrechen".tr()),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  bool result =
+                                      await FilePickerService.pickFile();
+                                  if (result) {
+                                    Navigator.of(
+                                      context,
+                                    ).pushNamedAndRemoveUntil(
+                                      '/home',
+                                      (route) => false,
+                                    );
+                                  } else {
+                                    Navigator.of(context).pop();
+                                    _showErrorDialog(
+                                      "Fehler beim Importieren der Datei.".tr(),
+                                    );
+                                  }
+                                },
+                                child: Text("Importieren".tr()),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                       child: Text("Deine Stadt nicht gefunden?".tr()),
                     ),
                   ],
@@ -266,12 +307,12 @@ class _SelectAddressState extends ConsumerState<SelectAddressPage> {
                               return;
                             }
 
-                            var dates = ref
+                            var events = ref
                                 .read(collectionEventsProvider(selectedAddress))
                                 .value;
 
-                            if (dates != null) {
-                              await myBox.put('collectionDates', dates);
+                            if (events != null) {
+                              await myBox.put('collectionEvents', events);
                             }
 
                             Navigator.of(context).pushNamedAndRemoveUntil(

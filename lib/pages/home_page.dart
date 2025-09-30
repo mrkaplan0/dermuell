@@ -18,6 +18,7 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   List<Event> items = [];
+  late AsyncValue<List<Event>> collectionDates;
   late Box myBox;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -68,9 +69,15 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    AsyncValue<List<Event>> collectionDates = ref.watch(
-      collectionEventsProvider(myBox.get('address')),
-    );
+    if (myBox.get('collectionEvents') == null) {
+      collectionDates = ref.watch(
+        collectionEventsProvider(myBox.get('address')),
+      );
+    } else {
+      items = List<Event>.from(myBox.get('collectionEvents') as List);
+      collectionDates = AsyncValue.data(items);
+    }
+
     var notificationsEnabled = ref.watch(notificationsEnabledProvider);
 
     return Scaffold(
