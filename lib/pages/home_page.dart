@@ -1,6 +1,9 @@
 import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/model/event.dart';
+import 'package:dermuell/pages/address/select_address_page.dart';
+import 'package:dermuell/pages/splash/splash_screen.dart';
 import 'package:dermuell/provider/address_provider.dart';
+import 'package:dermuell/provider/auth_provider.dart';
 import 'package:dermuell/provider/notification_provider.dart';
 import 'package:dermuell/widgets/my_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -95,7 +98,53 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ? Icon(Icons.notifications)
                 : Icon(Icons.notifications_none),
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
+          MenuAnchor(
+            menuChildren: [
+              MenuItemButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SelectAddressPage(),
+                      fullscreenDialog: true,
+                    ),
+                  );
+                },
+                child: Text('Einstellungen'.tr()),
+              ),
+              MenuItemButton(
+                onPressed: () async {
+                  await ref.read(authServiceProvider).logout();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SplashScreen(),
+                    ),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+                child: Text('Abmelden'.tr()),
+              ),
+            ],
+            builder:
+                (
+                  BuildContext context,
+                  MenuController controller,
+                  Widget? child,
+                ) {
+                  return IconButton(
+                    onPressed: () {
+                      if (controller.isOpen) {
+                        controller.close();
+                      } else {
+                        controller.open();
+                      }
+                    },
+                    icon: const Icon(Icons.settings),
+                    tooltip: 'Show menu',
+                  );
+                },
+          ),
         ],
       ),
       body: switch (collectionDates) {

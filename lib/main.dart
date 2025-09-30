@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/model/event.dart';
+import 'package:dermuell/pages/address/select_address_page.dart';
 import 'package:dermuell/pages/auth/login_page.dart';
+import 'package:dermuell/pages/details/notification_detail_page.dart';
 import 'package:dermuell/pages/home_page.dart';
 import 'package:dermuell/pages/landing_page.dart';
 import 'package:dermuell/pages/splash/splash_screen.dart';
@@ -24,7 +26,7 @@ void onDidReceiveNotificationResponse(NotificationResponse details) {
     // Payload'u kullanarak yönlendirme yap
     // Örneğin, payload etkinliğin ID'sini içeriyorsa:
     rootNavigatorKey.currentState?.push(
-      MaterialPageRoute(builder: (context) => SecondPage(payload)),
+      MaterialPageRoute(builder: (context) => NotificationDetailPage(payload)),
     );
   }
 }
@@ -123,10 +125,10 @@ class _MyAppState extends State<MyApp> {
     selectNotificationStream.stream.listen((
       NotificationResponse? response,
     ) async {
-      await Navigator.of(context).push(
+      await rootNavigatorKey.currentState?.push(
         MaterialPageRoute<void>(
           builder: (BuildContext context) =>
-              SecondPage(response?.payload, data: response?.data),
+              NotificationDetailPage(response?.payload),
         ),
       );
     });
@@ -150,9 +152,10 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
-        '/landing': (context) => const LandingPage(),
+        '/landing': (context) => LandingPage(),
         '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
+        '/address': (context) => const SelectAddressPage(),
       },
       theme: ThemeData(
         useMaterial3: true,
@@ -161,48 +164,4 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
-}
-
-class SecondPage extends StatefulWidget {
-  const SecondPage(this.payload, {this.data, super.key});
-
-  static const String routeName = '/secondPage';
-
-  final String? payload;
-  final Map<String, dynamic>? data;
-
-  @override
-  State<StatefulWidget> createState() => SecondPageState();
-}
-
-class SecondPageState extends State<SecondPage> {
-  String? _payload;
-  Map<String, dynamic>? _data;
-
-  @override
-  void initState() {
-    super.initState();
-    _payload = widget.payload;
-    _data = widget.data;
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text('Zweiter Bildschirm'.tr())),
-    body: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text('payload ${_payload ?? ''}'),
-          Text('data ${_data ?? ''}'),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Zurück'.tr()),
-          ),
-        ],
-      ),
-    ),
-  );
 }

@@ -8,13 +8,25 @@ class IcsUtils {
     }
     final String dtString = icsDateTime.dt;
     try {
+      DateTime parsedDateTime;
+
       if (dtString.length == 8 && !dtString.contains('T')) {
+        // Already date only format (YYYYMMDD)
         final year = dtString.substring(0, 4);
         final month = dtString.substring(4, 6);
         final day = dtString.substring(6, 8);
-        return DateTime.parse('$year-$month-$day');
+        parsedDateTime = DateTime.parse('$year-$month-$day');
+      } else {
+        // Full datetime format - parse and extract date only
+        parsedDateTime = DateTime.parse(dtString);
       }
-      return DateTime.parse(dtString);
+
+      // Return only the date part (without time)
+      return DateTime(
+        parsedDateTime.year,
+        parsedDateTime.month,
+        parsedDateTime.day,
+      );
     } catch (e) {
       debugPrint('Error parsing IcsDateTime string: "$dtString". Error: $e');
       return null;

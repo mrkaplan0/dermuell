@@ -44,10 +44,10 @@ class XConst {
 
   static Color? getColorFromFraktionName(String fraktionName) {
     var frNameLower = fraktionName.toLowerCase();
-    print(frNameLower.contains('rest'));
+
     if (frNameLower.contains('bio')) {
       return Colors.brown;
-    } else if (frNameLower.contains('gelbe')) {
+    } else if (frNameLower.contains('gelbe') || frNameLower.contains('dsd')) {
       return const Color.fromARGB(255, 207, 192, 49);
     } else if (frNameLower.contains('alt') || frNameLower.contains('pap')) {
       return Colors.green;
@@ -55,9 +55,9 @@ class XConst {
       return Colors.black;
     } else if (frNameLower.contains('wei')) {
       return Colors.red;
-    } else if (frNameLower.contains('grü')) {
+    } else if (frNameLower.contains('grün')) {
       return Colors.green[200];
-    } else if (frNameLower.contains('glass')) {
+    } else if (frNameLower.contains('glas')) {
       return Colors.blue;
     } else {
       return Colors.blueGrey;
@@ -68,7 +68,7 @@ class XConst {
     var frNameLower = fraktionName.toLowerCase();
     if (frNameLower.contains('bio')) {
       return Icon(Icons.grass);
-    } else if (frNameLower.contains('gelbe')) {
+    } else if (frNameLower.contains('gelbe') || frNameLower.contains('dsd')) {
       return Icon(Icons.recycling);
     } else if (frNameLower.contains('alt') || frNameLower.contains('pap')) {
       return Icon(Icons.menu_book);
@@ -76,9 +76,9 @@ class XConst {
       return Icon(Icons.delete, color: Colors.white);
     } else if (frNameLower.contains('wei')) {
       return Icon(Icons.forest);
-    } else if (frNameLower.contains('grü')) {
+    } else if (frNameLower.contains('grün')) {
       return Icon(Icons.eco);
-    } else if (frNameLower.contains('glass')) {
+    } else if (frNameLower.contains('glas')) {
       return Icon(Icons.wine_bar);
     } else {
       return Icon(Icons.data_saver_off);

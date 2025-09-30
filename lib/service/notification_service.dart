@@ -157,8 +157,7 @@ class NotificationService {
           title: 'Nicht Vergessen'.tr(),
           body: 'Morgen ist der Abholungstag für ${event.title}'.tr(),
           scheduledDate: scheduledDate,
-          payload: event.id
-              .toString(), // Add event ID as payload for navigation
+          payload: event.toJson(), // Add event as payload for navigation
         );
       }
     }
@@ -191,7 +190,7 @@ class NotificationService {
         title: 'Nicht Vergessen'.tr(),
         body: 'Morgen ist der Abholungstag für'.tr(args: [" ${event.title}"]),
         scheduledDate: scheduledDate,
-        payload: event.id.toString(), // Add event ID as payload for navigation
+        payload: event.toJson(), // Add event as payload for navigation
       );
     }
   }

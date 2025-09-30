@@ -16,8 +16,6 @@ class User {
     required this.role,
   });
 
-  User u = User(id: 1, name: "Ömer", email: "w@q.com", role: "role");
-
   User copyWith({
     int? id,
     String? name,
