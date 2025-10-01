@@ -151,7 +151,7 @@ class AddressService {
         gueltigAb: DateTime.parse(e['bezirk']['gueltigAb']),
       );
     }).toList();
-
+    print(events);
     // Return collection data based on the house number from API
     return events;
   }

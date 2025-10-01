@@ -18,5 +18,18 @@
     "Benachrichtigungen deaktiviert!": "Notifications disabled!",
     "Benachrichtigung für um gesetzt!": "Notification for {} set to {}!",
     "Nicht Vergessen": "Don't forget",
-    "Morgen ist der Abholungstag für": "Tomorrow is the collection day for {}!"
+    "Morgen ist der Abholungstag für": "Tomorrow is the collection day for {}!",
+    "Erinnerung": "Reminder",
+    "Zurück": "Back",
+    "Einstellungen": "Settings",
+    "Abmelden": "Log out",
+    "Importieren Sie Ihre Termin im ics format.": "Import your appointments in ics format.",
+    "Importieren": "Import",
+    "Fehler beim Importieren der Datei." : "Error importing the file.",
+    "Bitte wählen Sie eine Stadt.": "Please select a city.",
+    "Mehr laden...": "Load more...",
+    "Fehler": "Error",
+    "OK": "OK",
+    "Bitte wählen Sie Ihre Straße.": "Please select your street.",
+    "Bitte wählen Sie Ihre Müllarten.": "Please select your types of waste."
 }

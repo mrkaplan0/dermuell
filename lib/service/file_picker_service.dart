@@ -36,6 +36,10 @@ class FilePickerService {
         }
         var myBox = Hive.box('dataBox');
         if (events.isNotEmpty) {
+          if (myBox.containsKey('collectionEvents')) {
+            await myBox.delete('collectionEvents');
+          }
+
           await myBox.put('collectionEvents', events);
         }
         return true;

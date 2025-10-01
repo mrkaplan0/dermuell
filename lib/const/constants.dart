@@ -53,7 +53,8 @@ class XConst {
       return Colors.green;
     } else if (frNameLower.contains('rest')) {
       return Colors.black;
-    } else if (frNameLower.contains('wei')) {
+    } else if (frNameLower.contains('wei') ||
+        frNameLower.contains('tannenbaum')) {
       return Colors.red;
     } else if (frNameLower.contains('grün')) {
       return Colors.green[200];
@@ -74,7 +75,8 @@ class XConst {
       return Icon(Icons.menu_book);
     } else if (frNameLower.contains('rest')) {
       return Icon(Icons.delete, color: Colors.white);
-    } else if (frNameLower.contains('wei')) {
+    } else if (frNameLower.contains('wei') ||
+        frNameLower.contains('tannenbaum')) {
       return Icon(Icons.forest);
     } else if (frNameLower.contains('grün')) {
       return Icon(Icons.eco);

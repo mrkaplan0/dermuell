@@ -1,4 +1,5 @@
 import 'package:dermuell/const/constants.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class SearchableDropdown<T> extends StatefulWidget {
@@ -152,7 +153,7 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
             if (_hasMoreItems())
               DropdownMenuEntry<String>(
                 value: 'load_more',
-                label: 'Mehr laden...',
+                label: 'Mehr laden...'.tr(),
                 style: ButtonStyle(
                   foregroundColor: WidgetStateProperty.all(Colors.grey),
                 ),

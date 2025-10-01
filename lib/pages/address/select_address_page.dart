@@ -112,7 +112,7 @@ class _SelectAddressState extends ConsumerState<SelectAddressPage> {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text("Stadt nicht gefunden?".tr()),
+                            title: Text("Deine Stadt nicht gefunden?".tr()),
                             content: Text(
                               "Importieren Sie Ihre Termin im ics format.".tr(),
                             ),
@@ -230,7 +230,7 @@ class _SelectAddressState extends ConsumerState<SelectAddressPage> {
                   text: "Weiter".tr(),
                   onPressed: () {
                     if (streetID == null) {
-                      _showErrorDialog("Bitte wählen Sie Straße".tr());
+                      _showErrorDialog("Bitte wählen Sie Ihre Straße.".tr());
                       return;
                     }
                     confirmAddress(context);
@@ -296,6 +296,9 @@ class _SelectAddressState extends ConsumerState<SelectAddressPage> {
                               "collectionTypes": list,
                             };
                             var myBox = Hive.box('dataBox');
+                            if (myBox.containsKey('address')) {
+                              await myBox.delete('address');
+                            }
                             await myBox.put('address', selectedAddress);
                             if (list.isEmpty) {
                               Navigator.of(context).pop();
@@ -306,11 +309,19 @@ class _SelectAddressState extends ConsumerState<SelectAddressPage> {
                               return;
                             }
 
-                            var events = ref
-                                .read(collectionEventsProvider(selectedAddress))
-                                .value;
+                            ref.invalidate(
+                              collectionEventsProvider(selectedAddress),
+                            );
 
-                            if (events != null) {
+                            var events = await ref.read(
+                              collectionEventsProvider(selectedAddress).future,
+                            );
+
+                            if (events.isNotEmpty) {
+                              if (myBox.containsKey('collectionEvents')) {
+                                await myBox.delete('collectionEvents');
+                              }
+
                               await myBox.put('collectionEvents', events);
                             }
 
@@ -402,7 +413,7 @@ class _SelectAddressState extends ConsumerState<SelectAddressPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Fehler'),
+        title: const Text('Fehler').tr(),
         content: Text(message),
         actions: [
           TextButton(

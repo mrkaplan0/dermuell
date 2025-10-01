@@ -18,5 +18,18 @@
     "Aktivieren": "Aktivieren",
     "Benachrichtigungen deaktiviert!": "Benachrichtigungen deaktiviert!",
      "Nicht Vergessen": "Nicht Vergessen",
-    "Morgen ist der Abholungstag für": "Morgen ist der Abholungstag für {}!"
+    "Morgen ist der Abholungstag für": "Morgen ist der Abholungstag für {}!",
+    "Erinnerung": "Erinnerung",
+    "Zurück": "Zurück",
+    "Einstellungen": "Einstellungen",
+    "Abmelden": "Abmelden",
+    "Importieren Sie Ihre Termin im ics format.": "Importieren Sie Ihre Termin im ics format.",
+    "Importieren": "Importieren",
+    "Fehler beim Importieren der Datei." : "Fehler beim Importieren der Datei.",
+    "Bitte wählen Sie eine Stadt.": "Bitte wählen Sie eine Stadt.",
+    "Mehr laden...": "Mehr laden...",
+    "Fehler": "Fehler",
+    "OK": "OK",
+    "Bitte wählen Sie Ihre Straße.": "Bitte wählen Sie Ihre Straße.",
+    "Bitte wählen Sie Ihre Müllarten.": "Bitte wählen Sie Ihre Müllarten."
 }

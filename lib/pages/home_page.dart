@@ -101,6 +101,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           MenuAnchor(
             menuChildren: [
               MenuItemButton(
+                trailingIcon: const Icon(Icons.settings),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -113,6 +114,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 child: Text('Einstellungen'.tr()),
               ),
               MenuItemButton(
+                trailingIcon: const Icon(Icons.logout),
                 onPressed: () async {
                   await ref.read(authServiceProvider).logout();
                   Navigator.pushAndRemoveUntil(
@@ -123,7 +125,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                     (Route<dynamic> route) => false,
                   );
                 },
-                child: Text('Abmelden'.tr()),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 12.0),
+                  child: Text('Abmelden'.tr()),
+                ),
               ),
             ],
             builder:
@@ -140,7 +145,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         controller.open();
                       }
                     },
-                    icon: const Icon(Icons.settings),
+                    icon: const Icon(Icons.more_vert),
                     tooltip: 'Show menu',
                   );
                 },

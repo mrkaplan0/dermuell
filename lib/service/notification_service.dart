@@ -57,16 +57,28 @@ class NotificationService {
           notificationCategories: darwinNotificationCategories,
         );
 
+    // Windows initialization settings
+    const WindowsInitializationSettings initializationSettingsWindows =
+        WindowsInitializationSettings(
+          appName: 'Der Müll',
+          appUserModelId: 'com.dermuell.app',
+          iconPath: '@mipmap/ic_launcher',
+          guid: '026e4d60-ec86-4c72-94fd-2086156535e4',
+        );
+
     final InitializationSettings initializationSettings =
         InitializationSettings(
           android: initializationSettingsAndroid,
           iOS: initializationSettingsDarwin,
           macOS: initializationSettingsDarwin,
+          windows: initializationSettingsWindows, // Windows settings eklendi
         );
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: selectNotificationStream.add,
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+        selectNotificationStream.add(response);
+      },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
