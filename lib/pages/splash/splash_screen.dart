@@ -21,7 +21,7 @@ class SplashScreen extends StatelessWidget {
                   height: 50,
                 ),
               ).animate().moveY(
-                delay: 200.ms,
+                delay: 600.ms,
                 duration: 1000.ms,
                 begin: -400,
                 end: 50,
@@ -38,14 +38,14 @@ class SplashScreen extends StatelessWidget {
               ).animate(
                 effects: [
                   MoveEffect(
-                    delay: 1200.ms,
+                    delay: 1800.ms,
                     duration: 900.ms,
                     begin: Offset(60, 5),
                     end: Offset(-53, -27),
                     curve: Curves.easeOut,
                   ),
                   RotateEffect(
-                    delay: 900.ms,
+                    delay: 1500.ms,
                     duration: 950.ms,
                     curve: Curves.easeIn,
                     begin: 0.0, // 90 degree

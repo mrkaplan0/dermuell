@@ -48,6 +48,7 @@ dependencies:
   easy_localization: ^3.0.8
   file_picker: ^10.3.3
   icalendar_parser: ^2.1.0
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
