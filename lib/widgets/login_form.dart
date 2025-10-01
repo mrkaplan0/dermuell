@@ -17,7 +17,7 @@ class LoginForm extends ConsumerWidget {
     caseSensitive: false,
   );
   final String _invalidPassword =
-      "Das Passwort muss mindestens 6 Zeichen lang sein".tr();
+      "Das Passwort muss mindestens 6 Zeichen lang sein.".tr();
   FocusNode focusNode = FocusNode();
   FocusNode focusNode2 = FocusNode();
 
@@ -129,8 +129,8 @@ class LoginForm extends ConsumerWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Login fehlgeschlagen. Bitte versuchen Sie es erneut. Error: $error'
-                    .tr(),
+                'Login fehlgeschlagen. Bitte versuchen Sie es erneut. Error: {}'
+                    .tr(args: ['$error']),
               ),
             ),
           );
@@ -141,7 +141,7 @@ class LoginForm extends ConsumerWidget {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Willkommen ${user.name}!'.tr()),
+              content: Text('Willkommen {}!'.tr(args: [user.name])),
               duration: Durations.medium1,
             ),
           );
@@ -154,7 +154,11 @@ class LoginForm extends ConsumerWidget {
     } catch (e) {
       debugPrint('Login error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Ein Fehler ist aufgetreten: $e'.tr())),
+        SnackBar(
+          content: Text(
+            'Oops, da ist etwas schiefgelaufen: {}'.tr(args: ['$e']),
+          ),
+        ),
       );
     }
   }

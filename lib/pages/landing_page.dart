@@ -32,8 +32,12 @@ class LandingPage extends ConsumerWidget {
         } else {
           // User is logged in, navigate to the homepage
           if (myBox.get('address') != null) {
+            print("Address found in Hive: ${myBox.get('address')}");
             return HomePage(); // Homepage
           } else if (myBox.get('collectionEvents') != null) {
+            print(
+              "Collection events found in Hive: ${myBox.get('collectionEvents')}",
+            );
             return HomePage(); // Homepage
           } else {
             return SelectAddressPage(); // Address Selection Page

@@ -24,7 +24,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
   );
 
   final String _invalidPassword =
-      "Das Passwort muss mindestens 6 Zeichen lang sein".tr();
+      "Das Passwort muss mindestens 6 Zeichen lang sein.".tr();
   final String _passwordLabelText = 'Passwort'.tr();
   final String _password2LabelText = 'Passwort Wiederholung'.tr();
   final String _wrongPassword = "Passwörter stimmen nicht überein.".tr();
@@ -214,13 +214,16 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
         );
 
         if (error != null) {
-          _showErrorDialog(context, 'Registration failed. Please try again.');
+          _showErrorDialog(
+            context,
+            'Registrierung ist fehlgeschlagen. Versuchen Sie wieder!'.tr(),
+          );
           return;
         }
         if (result) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Super! Jezt anmelden!'.tr())));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Super! Jetzt anmelden!'.tr())),
+          );
           // Navigate to home or another page after successful registration
           Navigator.pushReplacementNamed(context, '/login');
         }

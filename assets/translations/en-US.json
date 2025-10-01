@@ -10,7 +10,7 @@
     "Bestätigen": "Confirm",
     "Ist Ihre Adresse richtig?": "Is your address correct?",
     "Abbrechen": "Cancel",
-    "Oops, da ist etwas schiefgelaufen:": "Oops, something went wrong:",
+    "Oops, da ist etwas schiefgelaufen: {}": "Oops, something went wrong: {}",
     "Benachrichtigungen aktivieren": "Enable notifications",
     "Möchten Sie Benachrichtigungen für bevorstehende Ereignisse erhalten?": "Would you like to receive notifications for upcoming events?",
     "Benachrichtigungszeit: ": "Notification time: ",
@@ -31,5 +31,16 @@
     "Fehler": "Error",
     "OK": "OK",
     "Bitte wählen Sie Ihre Straße.": "Please select your street.",
-    "Bitte wählen Sie Ihre Müllarten.": "Please select your types of waste."
+    "Bitte wählen Sie Ihre Müllarten.": "Please select your types of waste.",
+    "Das Passwort muss mindestens 6 Zeichen lang sein.": "The password must be at least 6 characters long.",
+    "Anmelden": "Login",
+    "Registrieren": "Sign up",
+    "Passwort": "Password",
+    "Super! Jetzt anmelden!": "Super! Now login!",
+    "Registrierung ist fehlgeschlagen. Versuchen Sie wieder!": "Registration failed. Please try again!",
+    "Haben Sie schon ein Konto?": "Already have an account?",
+    "Benutzername": "Username",
+    "Login fehlgeschlagen. Bitte versuchen Sie es erneut. Error: {}": "Login failed. Please try again. Error: {}",
+    "Willkommen {}!": "Welcome {}!"
+
 }

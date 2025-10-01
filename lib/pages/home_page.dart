@@ -1,7 +1,7 @@
 import 'package:dermuell/const/constants.dart';
 import 'package:dermuell/model/event.dart';
 import 'package:dermuell/pages/address/select_address_page.dart';
-import 'package:dermuell/pages/splash/splash_screen.dart';
+import 'package:dermuell/pages/auth/login_page.dart';
 import 'package:dermuell/provider/address_provider.dart';
 import 'package:dermuell/provider/auth_provider.dart';
 import 'package:dermuell/provider/notification_provider.dart';
@@ -119,9 +119,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   await ref.read(authServiceProvider).logout();
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const SplashScreen(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                     (Route<dynamic> route) => false,
                   );
                 },
@@ -153,8 +151,12 @@ class _HomePageState extends ConsumerState<HomePage> {
         ],
       ),
       body: switch (collectionDates) {
-        AsyncValue(hasError: true) => Text(
-          'Oops, da ist etwas schiefgelaufen: ${collectionDates.error}'.tr(),
+        AsyncValue(hasError: true) => Center(
+          child: Text(
+            'Oops, da ist etwas schiefgelaufen: {}'.tr(
+              args: ['${collectionDates.error}'],
+            ),
+          ),
         ),
         AsyncValue(:final value, hasValue: true) => showDatas(value ?? []),
         _ => Center(child: MyProgressIndicator()),

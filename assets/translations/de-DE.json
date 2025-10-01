@@ -11,7 +11,7 @@
     "Bestätigen": "Bestätigen",
     "Ist Ihre Adresse richtig?": "Ist Ihre Adresse richtig?",
     "Abbrechen": "Abbrechen",
-    "Oops, da ist etwas schiefgelaufen:": "Oops, da ist etwas schiefgelaufen:",
+    "Oops, da ist etwas schiefgelaufen: {}": "Oops, da ist etwas schiefgelaufen: {}",
     "Benachrichtigungen aktivieren": "Benachrichtigungen aktivieren",
     "Möchten Sie Benachrichtigungen für bevorstehende Ereignisse erhalten?": "Möchten Sie Benachrichtigungen für bevorstehende Ereignisse erhalten?",
     "Benachrichtigungszeit: ": "Benachrichtigungszeit: ",
@@ -31,5 +31,17 @@
     "Fehler": "Fehler",
     "OK": "OK",
     "Bitte wählen Sie Ihre Straße.": "Bitte wählen Sie Ihre Straße.",
-    "Bitte wählen Sie Ihre Müllarten.": "Bitte wählen Sie Ihre Müllarten."
+    "Bitte wählen Sie Ihre Müllarten.": "Bitte wählen Sie Ihre Müllarten.",
+    "Das Passwort muss mindestens 6 Zeichen lang sein.": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+    "Anmelden": "Anmelden",
+    "Registrieren": "Registrieren",
+    "Passwort": "Passwort",
+    "Super! Jetzt anmelden!": "Super! Jetzt anmelden!",
+    "Registrierung ist fehlgeschlagen. Versuchen Sie wieder!": "Registrierung ist fehlgeschlagen. Versuchen Sie wieder!",
+    "Haben Sie schon ein Konto?": "Haben Sie schon ein Konto?",
+    "Benutzername": "Benutzername",
+    "Login fehlgeschlagen. Bitte versuchen Sie es erneut. Error: {}": "Login fehlgeschlagen. Bitte versuchen Sie es erneut. Error: {}",
+    "Willkommen {}!": "Willkommen {}!"
+
+
 }
