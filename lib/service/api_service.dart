@@ -33,6 +33,7 @@ class ApiService {
 
   Future<void> setToken(String token) async {
     _token = token;
+    print(_token);
     await _storage.write(key: 'token', value: token);
     _dio.options.headers['Authorization'] = 'Bearer $token';
   }

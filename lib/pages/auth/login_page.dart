@@ -152,7 +152,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           autoPlay: false,
                           controller: animationController3,
                           onComplete: (controller) {
-                            Navigator.of(context).pushReplacementNamed('/');
+                            Navigator.of(
+                              context,
+                            ).pushReplacementNamed('/landing');
                           },
                         ),
               ),

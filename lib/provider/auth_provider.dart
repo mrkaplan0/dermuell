@@ -1,11 +1,11 @@
-import 'package:dermuell/service/fake_auth_service.dart';
+//import 'package:dermuell/service/fake_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-//import 'package:dermuell/service/auth_service.dart';
+import 'package:dermuell/service/auth_service.dart';
 import 'package:dermuell/model/user.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-final authServiceProvider = Provider((ref) => FakeAuthService());
+final authServiceProvider = Provider((ref) => AuthService());
 final storageProvider = Provider((ref) => FlutterSecureStorage());
 
 // Provider to access the token from secure storage
@@ -21,7 +21,15 @@ final currentUserProvider = FutureProvider<User?>((ref) async {
     debugPrint('No token found, returning null user.');
     return null;
   }
-  return await authService.currentUser(token);
+
+  try {
+    return await authService.currentUser(token);
+  } catch (e) {
+    debugPrint('Error getting current user: $e');
+    // If there's an error getting user, invalidate token
+    ref.invalidate(tokenProvider);
+    return null;
+  }
 });
 
 final logoutProvider = FutureProvider<bool>((ref) {
@@ -29,6 +37,7 @@ final logoutProvider = FutureProvider<bool>((ref) {
   return authService.logout().then((success) {
     if (success) {
       ref.invalidate(tokenProvider);
+      ref.invalidate(currentUserProvider);
       return true;
     } else {
       return false;

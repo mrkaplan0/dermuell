@@ -136,6 +136,8 @@ class LoginForm extends ConsumerWidget {
           );
           return;
         } else {
+          ref.invalidate(tokenProvider);
+          ref.invalidate(currentUserProvider);
           // Start animation and show message
           animationController.forward();
 

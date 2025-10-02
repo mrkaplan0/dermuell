@@ -20,22 +20,29 @@ class LandingPage extends ConsumerWidget {
       return Scaffold(body: const Center(child: MyProgressIndicator()));
     }
 
-    if (token.hasError || token.value == '' || token.value!.isEmpty) {
-      print('No valid token found, redirecting to LoginPage...');
+    if (token.hasError) {
+      debugPrint('Token error: ${token.error}');
       return LoginPage();
     }
+
+    if (token.value == null || token.value == '' || token.value!.isEmpty) {
+      debugPrint('No valid token found, redirecting to LoginPage...');
+      return LoginPage();
+    }
+
     var currentUser = ref.watch(currentUserProvider);
     return currentUser.when(
       data: (user) {
         if (user == null) {
+          debugPrint('Current user is null, redirecting to LoginPage...');
           return LoginPage();
         } else {
           // User is logged in, navigate to the homepage
           if (myBox.get('address') != null) {
-            print("Address found in Hive: ${myBox.get('address')}");
+            debugPrint("Address found in Hive: ${myBox.get('address')}");
             return HomePage(); // Homepage
           } else if (myBox.get('collectionEvents') != null) {
-            print(
+            debugPrint(
               "Collection events found in Hive: ${myBox.get('collectionEvents')}",
             );
             return HomePage(); // Homepage
@@ -46,8 +53,12 @@ class LandingPage extends ConsumerWidget {
       },
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (error, stack) =>
-          Scaffold(body: Center(child: Text('Error loading user: $error'))),
+      error: (error, stack) {
+        debugPrint('Current user error: $error');
+        debugPrint('Stack trace: $stack');
+        // If there's an authentication error, go to login
+        return LoginPage();
+      },
     );
   }
 }

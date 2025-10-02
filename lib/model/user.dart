@@ -47,7 +47,7 @@ class User {
       id: map['id'] as int,
       name: map['name'] as String,
       email: map['email'] as String,
-      password: map['password'] as String,
+      password: map['password'] as String?,
       role: map['role'] as String,
     );
   }
