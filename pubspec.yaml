@@ -66,6 +66,17 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+msix_config:
+  display_name: Der Müll
+  publisher_display_name: Omer Kaplan
+  publisher: CN=DerMuellCertificate
+  app_id: com.omerkaplan.dermuell
+  app_description: Eine App, die dich an deine Müllabfuhrtermine erinnert.
+  msix_version: 1.0.0.0
+  languages: en-us, de-de
+  certificate_path: C:\dermuellcertificate.pfx
+  certificate_password: Password
+  sign_tool_options: /fd SHA256 /a
 
 # The following section is specific to Flutter packages.
 flutter:
