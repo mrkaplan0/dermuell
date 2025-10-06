@@ -6,7 +6,7 @@ import 'package:dermuell/model/event.dart';
 import 'package:dermuell/pages/address/select_address_page.dart';
 import 'package:dermuell/pages/auth/login_page.dart';
 import 'package:dermuell/pages/details/notification_detail_page.dart';
-import 'package:dermuell/pages/home_page.dart';
+import 'package:dermuell/pages/nav_pages/waste_management_page.dart';
 import 'package:dermuell/pages/landing_page.dart';
 import 'package:dermuell/pages/splash/splash_screen.dart';
 import 'package:dermuell/service/notification_service.dart';
@@ -154,7 +154,7 @@ class _MyAppState extends State<MyApp> {
         '/': (context) => const SplashScreen(),
         '/landing': (context) => LandingPage(),
         '/login': (context) => const LoginPage(),
-        '/home': (context) => const HomePage(),
+        '/home': (context) => const WasteManagement(),
         '/address': (context) => const SelectAddressPage(),
       },
       theme: ThemeData(

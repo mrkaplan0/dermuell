@@ -5,6 +5,7 @@ import 'package:dermuell/pages/auth/login_page.dart';
 import 'package:dermuell/provider/address_provider.dart';
 import 'package:dermuell/provider/auth_provider.dart';
 import 'package:dermuell/provider/notification_provider.dart';
+import 'package:dermuell/widgets/custom_app_bar.dart';
 import 'package:dermuell/widgets/my_progress_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +13,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
+class WasteManagement extends ConsumerStatefulWidget {
+  const WasteManagement({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _WasteManagementState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> {
+class _WasteManagementState extends ConsumerState<WasteManagement> {
   List<Event> items = [];
   late AsyncValue<List<Event>> collectionDates;
   late Box myBox;
@@ -84,7 +86,18 @@ class _HomePageState extends ConsumerState<HomePage> {
     var notificationsEnabled = ref.watch(notificationsEnabledProvider);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
+        title: 'Der Müll'.tr(),
+        extraActionButton: IconButton(
+          onPressed: () => notificationsEnabled
+              ? deactivateNotification()
+              : dialogForNotificationTime(activateNotification),
+          icon: notificationsEnabled
+              ? Icon(Icons.notifications)
+              : Icon(Icons.notifications_none),
+        ),
+      ),
+      /*  appBar: AppBar(
         title: Text(
           'Der Müll'.tr(),
           style: TextStyle(fontFamily: 'FingerPaint'),
@@ -149,7 +162,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 },
           ),
         ],
-      ),
+      ), */
       body: switch (collectionDates) {
         AsyncValue(hasError: true) => Center(
           child: Text(

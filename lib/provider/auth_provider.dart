@@ -1,11 +1,11 @@
-//import 'package:dermuell/service/fake_auth_service.dart';
+import 'package:dermuell/service/fake_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dermuell/service/auth_service.dart';
+//import 'package:dermuell/service/auth_service.dart';
 import 'package:dermuell/model/user.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-final authServiceProvider = Provider((ref) => AuthService());
+final authServiceProvider = Provider((ref) => FakeAuthService());
 final storageProvider = Provider((ref) => FlutterSecureStorage());
 
 // Provider to access the token from secure storage

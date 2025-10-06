@@ -86,4 +86,18 @@ class XConst {
       return Icon(Icons.data_saver_off);
     }
   }
+
+  static Color getRandomColor() {
+    List<Color> colors = [
+      primaryColor,
+      secondaryColor,
+      thirdColor,
+      fourthColor,
+      fifthColor,
+      sixthColor,
+    ];
+
+    colors.shuffle();
+    return colors.first;
+  }
 }
